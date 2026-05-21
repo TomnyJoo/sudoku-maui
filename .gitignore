@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd\n# Project-specific ignores\nbin/\nobj/\nFlutterRef/\n.vscode/\n.deepseek/\ndocs/\n
+.deepseek/
+.vscode/
+FlutterRef/
+docs/
