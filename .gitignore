@@ -360,4 +360,4 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
-FodyWeavers.xsd
+FodyWeavers.xsd\n# Project-specific ignores\nbin/\nobj/\nFlutterRef/\n.vscode/\n.deepseek/\ndocs/\n
