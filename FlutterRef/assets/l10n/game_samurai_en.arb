@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+  "gameTypeSamuraiName": "Samurai Sudoku",
+  "@gameTypeSamuraiName": {
+    "description": "Samurai Sudoku game name"
+  },
+  "gameTypeSamuraiDescription": "Sudoku with multiple overlapping grids.",
+  "@gameTypeSamuraiDescription": {
+    "description": "Samurai Sudoku game description"
+  },
+  "gameTypeSamuraiRules": "Fill in the grids so that each row, column, and 3x3 region in each grid contains all digits from 1 to 9. Overlapping regions must satisfy both grids.",
+  "@gameTypeSamuraiRules": {
+    "description": "Samurai Sudoku game rules"
+  }
+}

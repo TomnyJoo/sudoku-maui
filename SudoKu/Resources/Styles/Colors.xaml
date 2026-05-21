@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ============================================ -->
+    <!-- Flutter UI 规范颜色定义 -->
+    <!-- ============================================ -->
+
+    <!-- 主色系列 -->
+    <Color x:Key="PrimaryColor">#3B82F6</Color>
+    <Color x:Key="PrimaryLightColor">#60A5FA</Color>
+    <Color x:Key="PrimaryDarkColor">#2563EB</Color>
+    <Color x:Key="SecondaryColor">#60A5FA</Color>
+    <Color x:Key="AccentColor">#F59E0B</Color>
+
+    <!-- 背景颜色 -->
+    <Color x:Key="LightBackgroundColor">#F9FAFB</Color>
+    <Color x:Key="DarkBackgroundColor">#111827</Color>
+    <Color x:Key="PageBackgroundColor">#F9FAFB</Color>
+
+    <!-- 首页渐变背景 -->
+    <Color x:Key="HomeGradientStartLight">#E0E7FF</Color>
+    <Color x:Key="HomeGradientEndLight">#C7D2FE</Color>
+    <Color x:Key="HomeGradientStartDark">#0F172A</Color>
+    <Color x:Key="HomeGradientEndDark">#1E1B4B</Color>
+
+    <!-- 毛玻璃效果颜色 -->
+    <Color x:Key="GlassBackgroundLight">#B3FFFFFF</Color>
+    <Color x:Key="GlassBackgroundDark">#14FFFFFF</Color>
+    <Color x:Key="GlassBorderLight">#22FFFFFF</Color>
+    <Color x:Key="GlassBorderDark">#0DFFFFFF</Color>
+
+    <!-- 状态颜色 -->
+    <Color x:Key="ErrorColor">#EF4444</Color>
+    <Color x:Key="ErrorLightColor">#F87171</Color>
+    <Color x:Key="SuccessColor">#10B981</Color>
+    <Color x:Key="SuccessLightColor">#34D399</Color>
+    <Color x:Key="WarningColor">#F59E0B</Color>
+    <Color x:Key="WarningLightColor">#FBBF24</Color>
+    <Color x:Key="InfoColor">#3B82F6</Color>
+
+    <!-- 文字颜色 -->
+    <Color x:Key="PrimaryTextColor">#1F2937</Color>
+    <Color x:Key="SecondaryTextColor">#6B7280</Color>
+    <Color x:Key="TertiaryTextColor">#9CA3AF</Color>
+    <Color x:Key="DarkPrimaryTextColor">#F9FAFB</Color>
+    <Color x:Key="DarkSecondaryTextColor">#D1D5DB</Color>
+
+    <!-- 卡片和表面颜色 -->
+    <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+    <Color x:Key="CardBackgroundDarkColor">#1F2937</Color>
+    <Color x:Key="SurfaceColor">#F3F4F6</Color>
+    <Color x:Key="SurfaceDarkColor">#374151</Color>
+
+    <!-- 边框颜色 -->
+    <Color x:Key="BorderColor">#E5E7EB</Color>
+    <Color x:Key="BorderDarkColor">#4B5563</Color>
+
+    <!-- 遮罩颜色 -->
+    <Color x:Key="OverlayBackgroundColor">#80000000</Color>
+    <Color x:Key="StatusBarBackgroundColor">#F0F0F0</Color>
+    <Color x:Key="TitleBarBackgroundColor">#FFFFFF</Color>
+
+    <!-- ============================================ -->
+    <!-- 游戏类型主题色 (Flutter规范) -->
+    <!-- ============================================ -->
+    <Color x:Key="GameTypeStandardColor">#2563EB</Color>
+    <Color x:Key="GameTypeDiagonalColor">#10B981</Color>
+    <Color x:Key="GameTypeWindowColor">#8B5CF6</Color>
+    <Color x:Key="GameTypeJigsawColor">#EC4899</Color>
+    <Color x:Key="GameTypeKillerColor">#F97316</Color>
+    <Color x:Key="GameTypeSamuraiColor">#DC2626</Color>
+
+    <!-- 游戏类型渐变开始色 -->
+    <Color x:Key="GameTypeStandardGradientStart">#2563EB</Color>
+    <Color x:Key="GameTypeStandardGradientEnd">#60A5FA</Color>
+    <Color x:Key="GameTypeDiagonalGradientStart">#10B981</Color>
+    <Color x:Key="GameTypeDiagonalGradientEnd">#34D399</Color>
+    <Color x:Key="GameTypeWindowGradientStart">#8B5CF6</Color>
+    <Color x:Key="GameTypeWindowGradientEnd">#A78BFA</Color>
+    <Color x:Key="GameTypeJigsawGradientStart">#EC4899</Color>
+    <Color x:Key="GameTypeJigsawGradientEnd">#F472B6</Color>
+    <Color x:Key="GameTypeKillerGradientStart">#F97316</Color>
+    <Color x:Key="GameTypeKillerGradientEnd">#FB923C</Color>
+    <Color x:Key="GameTypeSamuraiGradientStart">#DC2626</Color>
+    <Color x:Key="GameTypeSamuraiGradientEnd">#EF4444</Color>
+
+    <!-- ============================================ -->
+    <!-- 难度颜色 (Flutter规范) -->
+    <!-- ============================================ -->
+    <Color x:Key="DifficultyBeginnerColor">#10B981</Color>
+    <Color x:Key="DifficultyEasyColor">#22C55E</Color>
+    <Color x:Key="DifficultyMediumColor">#F59E0B</Color>
+    <Color x:Key="DifficultyHardColor">#EF4444</Color>
+    <Color x:Key="DifficultyExpertColor">#DC2626</Color>
+    <Color x:Key="DifficultyMasterColor">#7C3AED</Color>
+
+    <!-- ============================================ -->
+    <!-- 数独棋盘颜色 (Flutter规范) -->
+    <!-- ============================================ -->
+    <Color x:Key="BoardBackgroundColor">#FFFFFF</Color>
+    <Color x:Key="BoardBackgroundDarkColor">#111827</Color>
+    <Color x:Key="SelectedCellColor">#FFF3C4</Color>
+    <Color x:Key="SelectedCellDarkColor">#818CF8</Color>
+    <Color x:Key="HighlightedCellColor">#DBEAFE</Color>
+    <Color x:Key="HighlightedCellDarkColor">#3B82F6</Color>
+    <Color x:Key="SameNumberCellColor">#C8E6C9</Color>
+    <Color x:Key="SameNumberCellDarkColor">#064E3B</Color>
+    <Color x:Key="ErrorCellColor">#FECACA</Color>
+    <Color x:Key="ErrorCellDarkColor">#7F1D1D</Color>
+
+    <!-- 单元格文字颜色 -->
+    <Color x:Key="FixedCellTextColor">#111827</Color>
+    <Color x:Key="FixedCellTextDarkColor">#F9FAFB</Color>
+    <Color x:Key="UserInputTextColor">#3B82F6</Color>
+    <Color x:Key="UserInputTextDarkColor">#60A5FA</Color>
+    <Color x:Key="CandidateTextColor">#6B7280</Color>
+    <Color x:Key="CandidateTextDarkColor">#9CA3AF</Color>
+    <Color x:Key="HintTextColor">#10B981</Color>
+    <Color x:Key="HintTextDarkColor">#34D399</Color>
+
+    <!-- ============================================ -->
+    <!-- 按钮渐变定义 -->
+    <!-- ============================================ -->
+    <Color x:Key="PrimaryButtonGradientStart">#3B82F6</Color>
+    <Color x:Key="PrimaryButtonGradientEnd">#60A5FA</Color>
+    <Color x:Key="SecondaryButtonGradientStart">#8B5CF6</Color>
+    <Color x:Key="SecondaryButtonGradientEnd">#A78BFA</Color>
+    <Color x:Key="DangerButtonGradientStart">#EF4444</Color>
+    <Color x:Key="DangerButtonGradientEnd">#F87171</Color>
+    <Color x:Key="SuccessButtonGradientStart">#10B981</Color>
+    <Color x:Key="SuccessButtonGradientEnd">#34D399</Color>
+
+    <!-- ============================================ -->
+    <!-- 统计栏颜色 -->
+    <!-- ============================================ -->
+    <Color x:Key="StatsGradientStart">#6366F1</Color>
+    <Color x:Key="StatsGradientEnd">#8B5CF6</Color>
+    <Color x:Key="StatsBackgroundLight">#EEF2FF</Color>
+    <Color x:Key="StatsBackgroundDark">#1E1B4B</Color>
+
+    <!-- ============================================ -->
+    <!-- 键盘区域颜色 -->
+    <!-- ============================================ -->
+    <Color x:Key="NumberPadBackgroundLight">#F3F4F6</Color>
+    <Color x:Key="NumberPadBackgroundDark">#1F2937</Color>
+    <Color x:Key="NumberPadButtonLight">#FFFFFF</Color>
+    <Color x:Key="NumberPadButtonDark">#374151</Color>
+
+    <!-- ============================================ -->
+    <!-- 图标背景色 -->
+    <!-- ============================================ -->
+    <Color x:Key="IconBackgroundStandard">#E0E7FF</Color>
+    <Color x:Key="IconBackgroundDiagonal">#F3E8FF</Color>
+    <Color x:Key="IconBackgroundWindow">#DBEAFE</Color>
+    <Color x:Key="IconBackgroundJigsaw">#CFFAFE</Color>
+    <Color x:Key="IconBackgroundKiller">#FEE2E2</Color>
+    <Color x:Key="IconBackgroundSamurai">#FFEDD5</Color>
+
+    <!-- ============================================ -->
+    <!-- 旧版兼容颜色 (保留以确保向后兼容) -->
+    <!-- ============================================ -->
+    <Color x:Key="StandardSudokuColor">#6366F1</Color>
+    <Color x:Key="JigsawSudokuColor">#06B6D4</Color>
+    <Color x:Key="DiagonalSudokuColor">#A855F7</Color>
+    <Color x:Key="KillerSudokuColor">#EF4444</Color>
+    <Color x:Key="WindowSudokuColor">#3B82F6</Color>
+    <Color x:Key="SamuraiSudokuColor">#F97316</Color>
+
+    <!-- ============================================ -->
+    <!-- 自定义游戏页面专用颜色 -->
+    <!-- ============================================ -->
+    <!-- 渐变背景色 -->
+    <Color x:Key="GradientStartLight">#E0E7FF</Color>
+    <Color x:Key="GradientEndLight">#C7D2FE</Color>
+    <Color x:Key="GradientStartDark">#0F172A</Color>
+    <Color x:Key="GradientEndDark">#1E1B4B</Color>
+
+    <!-- 卡片背景色 -->
+    <Color x:Key="CardBackgroundLight">#FFFFFF</Color>
+    <Color x:Key="CardBackgroundDark">#1F2937</Color>
+
+    <!-- 文字颜色 -->
+    <Color x:Key="TextPrimaryLight">#1F2937</Color>
+    <Color x:Key="TextPrimaryDark">#F9FAFB</Color>
+    <Color x:Key="TextSecondaryLight">#6B7280</Color>
+    <Color x:Key="TextSecondaryDark">#D1D5DB</Color>
+
+</ResourceDictionary>

@@ -1,0 +1,15 @@
+{
+  "@@locale": "zh",
+  "gameTypeDiagonalName": "对角线数独",
+  "@gameTypeDiagonalName": {
+    "description": "对角线数独游戏名称"
+  },
+  "gameTypeDiagonalDescription": "带有额外对角线规则的数独游戏。",
+  "@gameTypeDiagonalDescription": {
+    "description": "对角线数独游戏描述"
+  },
+  "gameTypeDiagonalRules": "填写网格，使每行、每列、每个3x3区域以及两条主对角线都包含1到9的所有数字。",
+  "@gameTypeDiagonalRules": {
+    "description": "对角线数独游戏规则"
+  }
+}

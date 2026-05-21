@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="App_Title" xml:space="preserve">
+    <value>数独合集</value>
+  </data>
+  <data name="Language_Chinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="GameType_Standard" xml:space="preserve">
+    <value>标准数独</value>
+  </data>
+  <data name="GameType_Standard_Desc" xml:space="preserve">
+    <value>经典9x9数独，每行、每列和每个3x3宫格内填入1-9且不重复</value>
+  </data>
+  <data name="GameType_Jigsaw" xml:space="preserve">
+    <value>锯齿数独</value>
+  </data>
+  <data name="GameType_Jigsaw_Desc" xml:space="preserve">
+    <value>不规则宫格数独，宫格形状为锯齿形而非标准3x3方块</value>
+  </data>
+  <data name="GameType_Diagonal" xml:space="preserve">
+    <value>对角线数独</value>
+  </data>
+  <data name="GameType_Diagonal_Desc" xml:space="preserve">
+    <value>在标准数独基础上增加对角线约束，两条主对角线也需填入1-9且不重复</value>
+  </data>
+  <data name="GameType_Killer" xml:space="preserve">
+    <value>杀手数独</value>
+  </data>
+  <data name="GameType_Killer_Desc" xml:space="preserve">
+    <value>无初始数字，通过笼子区域的数字之和提示来推理填入数字</value>
+  </data>
+  <data name="GameType_Window" xml:space="preserve">
+    <value>窗口数独</value>
+  </data>
+  <data name="GameType_Window_Desc" xml:space="preserve">
+    <value>在标准数独基础上增加四个窗口区域约束，窗口内数字也需不重复</value>
+  </data>
+  <data name="GameType_Samurai" xml:space="preserve">
+    <value>武士数独</value>
+  </data>
+  <data name="GameType_Samurai_Desc" xml:space="preserve">
+    <value>五个9x9数独重叠组成的大型谜题，极具挑战性</value>
+  </data>
+  <data name="GameType_Custom" xml:space="preserve">
+    <value>自定义数独</value>
+  </data>
+  <data name="GameType_Custom_Desc" xml:space="preserve">
+    <value>创建和编辑您自己的数独谜题</value>
+  </data>
+  <data name="Difficulty_Beginner" xml:space="preserve">
+    <value>入门</value>
+  </data>
+  <data name="Difficulty_Easy" xml:space="preserve">
+    <value>简单</value>
+  </data>
+  <data name="Difficulty_Medium" xml:space="preserve">
+    <value>中等</value>
+  </data>
+  <data name="Difficulty_Hard" xml:space="preserve">
+    <value>困难</value>
+  </data>
+  <data name="Difficulty_Expert" xml:space="preserve">
+    <value>专家</value>
+  </data>
+  <data name="Difficulty_Master" xml:space="preserve">
+    <value>大师</value>
+  </data>
+  <data name="Difficulty_Custom" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="Button_StartNewGame" xml:space="preserve">
+    <value>开始新游戏</value>
+  </data>
+  <data name="Button_ContinueGame" xml:space="preserve">
+    <value>加载游戏</value>
+  </data>
+  <data name="Button_CustomGame" xml:space="preserve">
+    <value>自定义游戏</value>
+  </data>
+  <data name="Button_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Button_Undo" xml:space="preserve">
+    <value>撤销</value>
+  </data>
+  <data name="Button_Redo" xml:space="preserve">
+    <value>重做</value>
+  </data>
+  <data name="Button_Hint" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="Button_Erase" xml:space="preserve">
+    <value>擦除</value>
+  </data>
+  <data name="Button_Notes" xml:space="preserve">
+    <value>笔记</value>
+  </data>
+  <data name="Button_Solution" xml:space="preserve">
+    <value>解答</value>
+  </data>
+  <data name="Button_PlayAgain" xml:space="preserve">
+    <value>再玩一次</value>
+  </data>
+  <data name="Button_BackToMenu" xml:space="preserve">
+    <value>返回主菜单</value>
+  </data>
+  <data name="Button_Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="Button_ClearStatistics" xml:space="preserve">
+    <value>清除统计数据</value>
+  </data>
+  <data name="Button_Validate" xml:space="preserve">
+    <value>验证</value>
+  </data>
+  <data name="Page_Home" xml:space="preserve">
+    <value>数独合集</value>
+  </data>
+  <data name="Page_Game" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="Page_Settings" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="Page_Statistics" xml:space="preserve">
+    <value>统计</value>
+  </data>
+  <data name="Page_Rules" xml:space="preserve">
+    <value>规则</value>
+  </data>
+  <data name="Page_Completion" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="Page_CustomGame" xml:space="preserve">
+    <value>自定义游戏</value>
+  </data>
+  <data name="Game_GeneratingPuzzle" xml:space="preserve">
+    <value>正在生成谜题...</value>
+  </data>
+  <data name="Game_Congratulations" xml:space="preserve">
+    <value>恭喜完成!</value>
+  </data>
+  <data name="Game_NewRecord" xml:space="preserve">
+    <value>新纪录!</value>
+  </data>
+  <data name="Game_GameOver" xml:space="preserve">
+    <value>游戏结束</value>
+  </data>
+  <data name="Game_Mistakes" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Game_BestTime" xml:space="preserve">
+    <value>最佳</value>
+  </data>
+  <data name="Game_ElapsedTime" xml:space="preserve">
+    <value>用时</value>
+  </data>
+  <data name="Game_CompletionPercentage" xml:space="preserve">
+    <value>完成度</value>
+  </data>
+  <data name="Game_Paused" xml:space="preserve">
+    <value>已暂停</value>
+  </data>
+  <data name="Stats_TotalGamesPlayed" xml:space="preserve">
+    <value>总游戏次数</value>
+  </data>
+  <data name="Stats_TotalGamesWon" xml:space="preserve">
+    <value>总胜利次数</value>
+  </data>
+  <data name="Stats_WinRate" xml:space="preserve">
+    <value>胜率</value>
+  </data>
+  <data name="Stats_CurrentStreak" xml:space="preserve">
+    <value>当前连胜</value>
+  </data>
+  <data name="Stats_BestStreak" xml:space="preserve">
+    <value>最佳连胜</value>
+  </data>
+  <data name="Stats_TotalPlayTime" xml:space="preserve">
+    <value>总游戏时间</value>
+  </data>
+  <data name="Stats_GamesPlayed" xml:space="preserve">
+    <value>游戏次数</value>
+  </data>
+  <data name="Stats_GamesWon" xml:space="preserve">
+    <value>胜利次数</value>
+  </data>
+  <data name="Stats_BestTime" xml:space="preserve">
+    <value>最佳时间</value>
+  </data>
+  <data name="Stats_AvgTime" xml:space="preserve">
+    <value>平均时间</value>
+  </data>
+  <data name="Stats_Overview" xml:space="preserve">
+    <value>总览</value>
+  </data>
+  <data name="Stats_Comparison" xml:space="preserve">
+    <value>对比</value>
+  </data>
+  <data name="Stats_Details" xml:space="preserve">
+    <value>详情</value>
+  </data>
+  <data name="Stats_DetailedDescription" xml:space="preserve">
+    <value>各游戏类型详细统计</value>
+  </data>
+  <data name="Stats_GamesPlayedFormat" xml:space="preserve">
+    <value>游戏: {0}</value>
+  </data>
+  <data name="Stats_GamesWonFormat" xml:space="preserve">
+    <value>胜利: {0}</value>
+  </data>
+  <data name="Settings_HighlightSettings" xml:space="preserve">
+    <value>高亮设置</value>
+  </data>
+  <data name="Settings_AdvancedSettings" xml:space="preserve">
+    <value>高级设置</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="Settings_BackgroundMusic" xml:space="preserve">
+    <value>背景音乐</value>
+  </data>
+  <data name="Settings_SoundEffects" xml:space="preserve">
+    <value>音效</value>
+  </data>
+  <data name="Settings_ErrorHighlight" xml:space="preserve">
+    <value>错误高亮</value>
+  </data>
+  <data name="Settings_HighlightSameNumbers" xml:space="preserve">
+    <value>相同数字高亮</value>
+  </data>
+  <data name="Settings_HighlightRelatedCells" xml:space="preserve">
+    <value>关联单元格高亮</value>
+  </data>
+  <data name="Settings_AutoCheckErrors" xml:space="preserve">
+    <value>自动错误检查</value>
+  </data>
+  <data name="Settings_AutoMarkMode" xml:space="preserve">
+    <value>自动笔记模式</value>
+  </data>
+  <data name="Settings_ShowTimer" xml:space="preserve">
+    <value>显示计时器</value>
+  </data>
+  <data name="Settings_AdvancedStrategy" xml:space="preserve">
+    <value>高级策略提示</value>
+  </data>
+  <data name="Settings_SaveSettings" xml:space="preserve">
+    <value>保存设置</value>
+  </data>
+  <data name="Settings_BasicSettings" xml:space="preserve">
+    <value>基础设置</value>
+  </data>
+  <data name="Settings_GameSettings" xml:space="preserve">
+    <value>游戏设置</value>
+  </data>
+  <data name="Settings_SystemSettings" xml:space="preserve">
+    <value>系统设置</value>
+  </data>
+  <data name="Settings_EnableBackgroundMusic" xml:space="preserve">
+    <value>启用背景音乐</value>
+  </data>
+  <data name="Settings_EnableSoundEffects" xml:space="preserve">
+    <value>启用音效</value>
+  </data>
+  <data name="Settings_Volume" xml:space="preserve">
+    <value>音量</value>
+  </data>
+  <data name="Settings_Audio" xml:space="preserve">
+    <value>音频设置</value>
+  </data>
+  <data name="Settings_CandidateSettings" xml:space="preserve">
+    <value>候选数设置</value>
+  </data>
+  <data name="Settings_SelectTheme" xml:space="preserve">
+    <value>选择主题</value>
+  </data>
+  <data name="Settings_SelectLanguage" xml:space="preserve">
+    <value>选择语言</value>
+  </data>
+  <data name="Completion_GameType" xml:space="preserve">
+    <value>游戏类型</value>
+  </data>
+  <data name="Completion_Difficulty" xml:space="preserve">
+    <value>难度</value>
+  </data>
+  <data name="Completion_TimeUsed" xml:space="preserve">
+    <value>用时</value>
+  </data>
+  <data name="Completion_ErrorCount" xml:space="preserve">
+    <value>错误次数</value>
+  </data>
+  <data name="Completion_Accuracy" xml:space="preserve">
+    <value>准确率</value>
+  </data>
+  <data name="Home_SelectGameType" xml:space="preserve">
+    <value>选择游戏类型</value>
+  </data>
+  <data name="Home_SelectDifficulty" xml:space="preserve">
+    <value>选择难度</value>
+  </data>
+  <data name="CustomGame_FilledCells" xml:space="preserve">
+    <value>已填</value>
+  </data>
+  <data name="CustomGame_RemainingCells" xml:space="preserve">
+    <value>剩余</value>
+  </data>
+  <data name="CustomGame_Validate" xml:space="preserve">
+    <value>验证</value>
+  </data>
+  <data name="CustomGame_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="CustomGame_StartGame" xml:space="preserve">
+    <value>开始游戏</value>
+  </data>
+  <data name="CustomGame_Clear" xml:space="preserve">
+    <value>清空</value>
+  </data>
+  <data name="Rules_Standard_Title" xml:space="preserve">
+    <value>标准数独规则</value>
+  </data>
+  <data name="Rules_Standard_Description" xml:space="preserve">
+    <value>标准数独是最经典的数独变体</value>
+  </data>
+  <data name="Rules_Jigsaw_Title" xml:space="preserve">
+    <value>锯齿数独规则</value>
+  </data>
+  <data name="Rules_Diagonal_Title" xml:space="preserve">
+    <value>对角线数独规则</value>
+  </data>
+  <data name="Rules_Killer_Title" xml:space="preserve">
+    <value>杀手数独规则</value>
+  </data>
+  <data name="Rules_Window_Title" xml:space="preserve">
+    <value>窗口数独规则</value>
+  </data>
+  <data name="Rules_Samurai_Title" xml:space="preserve">
+    <value>武士数独规则</value>
+  </data>
+  <data name="Msg_ConfirmClearStats" xml:space="preserve">
+    <value>确定要清除所有统计数据吗？此操作不可撤销。</value>
+  </data>
+  <data name="Msg_ConfirmDeleteSave" xml:space="preserve">
+    <value>确定要删除此存档吗？</value>
+  </data>
+  <data name="Msg_NoSavedGame" xml:space="preserve">
+    <value>没有找到已保存的游戏</value>
+  </data>
+  <data name="Msg_GameSaved" xml:space="preserve">
+    <value>游戏已保存</value>
+  </data>
+  <data name="Msg_InvalidPuzzle" xml:space="preserve">
+    <value>谜题无效，请检查输入</value>
+  </data>
+  <data name="Msg_PuzzleComplete" xml:space="preserve">
+    <value>谜题已完成</value>
+  </data>
+  <data name="Msg_HintUsed" xml:space="preserve">
+    <value>已使用提示</value>
+  </data>
+  <data name="Msg_NoMoreHints" xml:space="preserve">
+    <value>没有更多提示了</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>浅色</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>深色</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>跟随系统</value>
+  </data>
+  <data name="App_Version" xml:space="preserve">
+    <value>版本 1.0</value>
+  </data>
+  <data name="App_Copyright" xml:space="preserve">
+    <value>© 2026 天王软件工作室</value>
+  </data>
+  <data name="Stats_TotalGames" xml:space="preserve">
+    <value>总游戏次数</value>
+  </data>
+  <data name="Stats_TotalWins" xml:space="preserve">
+    <value>总胜利次数</value>
+  </data>
+  <data name="Stats_CurrentWinStreak" xml:space="preserve">
+    <value>当前连胜</value>
+  </data>
+  <data name="Stats_BestWinStreak" xml:space="preserve">
+    <value>最佳连胜</value>
+  </data>
+  <data name="Stats_Games" xml:space="preserve">
+    <value>游戏: {0}</value>
+  </data>
+  <data name="Stats_Wins" xml:space="preserve">
+    <value>胜利: {0}</value>
+  </data>
+  <data name="Stats_GameTypeStats" xml:space="preserve">
+    <value>各游戏类型详细统计</value>
+  </data>
+  <data name="Stats_GameTypeStatsDetail" xml:space="preserve">
+    <value>游戏次数</value>
+  </data>
+  <data name="Rules_Title" xml:space="preserve">
+    <value>游戏规则</value>
+  </data>
+  <data name="Rules_Description" xml:space="preserve">
+    <value>规则介绍</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Common_Button_OK" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="Gen_Initializing" xml:space="preserve">
+    <value>正在初始化...</value>
+  </data>
+  <data name="Gen_LoadingTemplate" xml:space="preserve">
+    <value>正在加载模板...</value>
+  </data>
+  <data name="Gen_CreatingRegions" xml:space="preserve">
+    <value>正在创建区域...</value>
+  </data>
+  <data name="Gen_ApplyingSubstitution" xml:space="preserve">
+    <value>正在应用变换...</value>
+  </data>
+  <data name="Gen_GeneratingSolution" xml:space="preserve">
+    <value>正在生成解答...</value>
+  </data>
+  <data name="Gen_DiggingPuzzle" xml:space="preserve">
+    <value>正在生成谜题...</value>
+  </data>
+  <data name="Gen_Validating" xml:space="preserve">
+    <value>正在验证谜题...</value>
+  </data>
+  <data name="Gen_Completed" xml:space="preserve">
+    <value>生成完成</value>
+  </data>
+  <data name="Gen_Failed" xml:space="preserve">
+    <value>生成失败</value>
+  </data>
+  <data name="Gen_FailedMessage" xml:space="preserve">
+    <value>生成{0}数独{1}级游戏失败，请稍后重试！</value>
+  </data>
+  <data name="Gen_UserCancelled" xml:space="preserve">
+    <value>用户取消</value>
+  </data>
+  <data name="GameTypeStandardDescription" xml:space="preserve">
+    <value>经典9x9数独，标准规则</value>
+  </data>
+  <data name="GameTypeDiagonalDescription" xml:space="preserve">
+    <value>对角线也需填满1-9</value>
+  </data>
+  <data name="GameTypeWindowDescription" xml:space="preserve">
+    <value>四个额外窗口区域</value>
+  </data>
+  <data name="GameTypeJigsawDescription" xml:space="preserve">
+    <value>不规则区域形状</value>
+  </data>
+  <data name="GameTypeKillerDescription" xml:space="preserve">
+    <value>笼子求和约束</value>
+  </data>
+  <data name="GameTypeSamuraiDescription" xml:space="preserve">
+    <value>五个重叠的9x9网格</value>
+  </data>
+  <data name="Completion_Streak" xml:space="preserve">
+    <value>连胜</value>
+  </data>
+  <data name="Completion_BackToHome" xml:space="preserve">
+    <value>返回首页</value>
+  </data>
+  <data name="Completion_ViewStatistics" xml:space="preserve">
+    <value>查看统计</value>
+  </data>
+  <data name="Settings_GameSettingsLabel" xml:space="preserve">
+    <value>游戏设置</value>
+  </data>
+  <data name="Difficulty_Label" xml:space="preserve">
+    <value>难度</value>
+  </data>
+  <data name="Button_LoadGame" xml:space="preserve">
+    <value>加载游戏</value>
+  </data>
+  <data name="Completion_PuzzleCompleted" xml:space="preserve">
+    <value>谜题已完成</value>
+  </data>
+  <data name="Completion_Current" xml:space="preserve">
+    <value>当前</value>
+  </data>
+  <data name="Completion_BestScore" xml:space="preserve">
+    <value>最佳成绩</value>
+  </data>
+  <data name="Completion_NewRecordMessage" xml:space="preserve">
+    <value>新纪录!</value>
+  </data>
+  <data name="SubGrid_TopLeft" xml:space="preserve">
+    <value>左上</value>
+  </data>
+  <data name="SubGrid_TopRight" xml:space="preserve">
+    <value>右上</value>
+  </data>
+  <data name="SubGrid_BottomLeft" xml:space="preserve">
+    <value>左下</value>
+  </data>
+  <data name="SubGrid_BottomRight" xml:space="preserve">
+    <value>右下</value>
+  </data>
+  <data name="SubGrid_Center" xml:space="preserve">
+    <value>中心</value>
+  </data>
+</root>

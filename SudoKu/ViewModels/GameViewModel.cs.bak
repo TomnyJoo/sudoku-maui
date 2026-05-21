@@ -1,0 +1,1486 @@
+﻿using System.Collections.Immutable;
+
+namespace SudoKu.ViewModels;
+
+using CommunityToolkit.Mvvm.Input;
+using SudoKu.Helpers;
+using SudoKu.Models;
+using SudoKu.Models.Boards;
+using SudoKu.Resources;
+using SudoKu.Services;
+using SudoKu.Services.Interfaces;
+using SudoKu.Services.Solving;
+using SudoKu.ViewModels.Mixins;
+
+/// <summary>
+/// 缁熶竴娓告垙瑙嗗浘妯″瀷锛岃礋璐ｆ父鎴忕殑鏍稿績閫昏緫鍜岀姸鎬佺鐞嗐€?/// </summary>
+public partial class GameViewModel : BaseViewModel
+{
+    #region 鏈嶅姟渚濊禆
+
+    /// <summary>娉涘瀷娓告垙鏈嶅姟鎺ュ彛銆?/summary>
+    private readonly IGameService<Board> _gameService;
+
+    /// <summary>娓告垙瀛樺偍鏈嶅姟瀹炰緥銆?/summary>
+    private readonly GameStorageService _storageService;
+
+    /// <summary>缁熻鏈嶅姟瀹炰緥銆?/summary>
+    private readonly StatisticsStorageService _statisticsService;
+
+    /// <summary>璁剧疆鏈嶅姟瀹炰緥銆?/summary>
+    private readonly SettingsService _settingsService;
+
+    /// <summary>闊抽鏈嶅姟瀹炰緥銆?/summary>
+    private readonly AudioService _audioService;
+
+    #endregion
+
+    #region Handler 瀹炰緥
+
+    private GameInputHandler<Board>? _inputHandler;
+    private GameLifecycleHandler<Board>? _lifecycleHandler;
+    private GameAssistHandler<Board>? _assistHandler;
+    private GamePersistenceHandler<Board>? _persistenceHandler;
+    private GameTimerHandler? _timerHandler;
+    private GameCompletionHandler? _completionHandler;
+    private GamePropertyNotificationHandler? _notificationHandler;
+    private GameAutoMarkHandler? _autoMarkHandler;
+
+    #endregion
+
+    #region 鍒濆鍖?
+    public GameViewModel(
+        IGameService<Board> gameService,
+        GameStorageService storageService,
+        StatisticsStorageService statisticsService,
+        SettingsService settingsService,
+        AudioService audioService) : base()
+    {
+        _gameService = gameService;
+        _storageService = storageService;
+        _statisticsService = statisticsService;
+        _settingsService = settingsService;
+        _audioService = audioService;
+        InitializeHandlers();
+    }
+
+    private void InitializeHandlers()
+    {
+        _inputHandler = new GameInputHandler<Board>(
+            () => _currentState,
+            state => CurrentState = state,
+            () => IsPlaying);
+
+        _lifecycleHandler = new GameLifecycleHandler<Board>(
+            () => _currentState,
+            state => CurrentState = state,
+            () => IsShowingSolution);
+
+        _assistHandler = new GameAssistHandler<Board>(
+            () => _currentState,
+            state => CurrentState = state,
+            () => IsPlaying,
+            msg => _lastHintMessage = msg,
+            () => _currentState?.Solution);
+
+        _persistenceHandler = new GamePersistenceHandler<Board>(
+            () => _currentState,
+            state => CurrentState = state,
+            HandleError,
+            async () => await _storageService.SaveGameAsync(_currentState!),
+            async () => await _storageService.LoadGameAsync(_currentState?.GameType ?? GameType.Standard, _currentState?.Difficulty ?? Difficulty.Medium),
+            async () => await GameStorageService.HasSavedGameAsync(_currentState?.GameType ?? GameType.Standard, _currentState?.Difficulty ?? Difficulty.Medium));
+
+        _timerHandler = new GameTimerHandler(
+            () => _currentState?.ElapsedTime ?? 0,
+            newTime => CurrentState = CurrentState?.UpdateElapsedTime(newTime));
+
+        _completionHandler = new GameCompletionHandler(
+            () => _currentState,
+            state => CurrentState = state,
+            _statisticsService,
+            _audioService);
+
+        _notificationHandler = new GamePropertyNotificationHandler(
+            propName => OnPropertyChanged(propName),
+            () => {
+                SelectCellCommand.NotifyCanExecuteChanged();
+                UndoCommand.NotifyCanExecuteChanged();
+                RedoCommand.NotifyCanExecuteChanged();
+                EraseCommand.NotifyCanExecuteChanged();
+                InputNumberCommand.NotifyCanExecuteChanged();
+                ToggleMarkModeCommand.NotifyCanExecuteChanged();
+            });
+
+        _autoMarkHandler = new GameAutoMarkHandler(
+            () => _currentState,
+            state => CurrentState = state,
+            _settingsService);
+    }
+
+    #endregion
+
+    #region 绉佹湁瀛楁
+
+    /// <summary>褰撳墠娓告垙鐘舵€併€?/summary>
+    private GameState<Board>? _currentState;
+
+    /// <summary>娓告垙鐢熸垚鍙栨秷浠ょ墝婧愩€?/summary>
+    private CancellationTokenSource? _generationCts;
+
+    /// <summary>鏄惁姝ｅ湪鐢熸垚璋滈銆?/summary>
+    private bool _isGenerating;
+
+    /// <summary>褰撳墠鐢熸垚闃舵銆?/summary>
+    private GenerationStage _currentGenerationStage = GenerationStage.Initializing;
+
+    /// <summary>宸茬敤鏃堕棿鏄剧ず瀛楃涓层€?/summary>
+    private string _elapsedTimeDisplay = "00:00";
+
+    /// <summary>鏈€浣虫椂闂存樉绀哄瓧绗︿覆銆?/summary>
+    private string _bestTimeDisplay = "--:--";
+
+    /// <summary>瀹屾垚鐧惧垎姣斻€?/summary>
+    private double _completionPercentage;
+
+    /// <summary>褰撳墠閫変腑鐨勫崟鍏冩牸銆?/summary>
+    private SudokuCell? _selectedCell;
+
+    /// <summary>姝﹀＋鏁扮嫭褰撳墠瀛愮綉鏍肩储寮曪紙0-4锛夈€?/summary>
+    private int _currentSubGridIndex = 4; // 榛樿鏄剧ず涓績缃戞牸
+
+    /// <summary>鏄惁澶勪簬姝﹀＋鏁扮嫭鎬昏妯″紡銆?/summary>
+    private bool _isOverviewMode;
+
+    /// <summary>鏄惁鏄剧ず瀵硅绾裤€?/summary>
+    private bool _showDiagonalLines = true;
+
+    /// <summary>鏄惁鏄剧ず鍖哄煙缂栧彿銆?/summary>
+    private bool _showRegionNumbers = true;
+
+    /// <summary>鏈€浣虫垚缁╃紦瀛樸€?/summary>
+    private BestScore? _cachedBestScore;
+
+    /// <summary>鏈€浣虫垚缁╂槸鍚﹀凡鍔犺浇銆?/summary>
+    private bool _isBestScoreLoaded;
+
+    /// <summary>鏈€鍚庝竴娆℃彁绀烘秷鎭€?/summary>
+    private string? _lastHintMessage;
+
+    /// <summary>鑷姩鏍囪闃叉姈璁℃椂鍣ㄣ€?/summary>
+    private CancellationTokenSource? _autoMarkDebounceCts;
+
+    /// <summary>瀵艰埅鐘舵€侊細鏄惁棣栨瀵艰埅銆?/summary>
+    private bool _isFirstNavigation = true;
+
+    /// <summary>瀵艰埅鐘舵€侊細鏄惁鏈夋椿璺冩父鎴忋€?/summary>
+    private bool _hasActiveGame = false;
+
+    /// <summary>瀵艰埅鐘舵€侊細鏈€鍚庝竴娆℃父鎴忕被鍨嬨€?/summary>
+    private GameType? _lastGameType;
+
+    /// <summary>瀵艰埅鐘舵€侊細鏈€鍚庝竴娆￠毦搴︺€?/summary>
+    private Difficulty? _lastDifficulty;
+
+    /// <summary>鏄惁姝ｅ湪璁＄畻鍊欓€夋暟銆?/summary>
+    private bool _isCalculatingCandidates;
+
+    /// <summary>淇濆瓨闃叉姈璁℃椂鍣ㄣ€?/summary>
+    private CancellationTokenSource? _saveDebounceCts;
+
+    #endregion
+
+    #region 娓告垙鐘舵€佸睘鎬?
+    /// <summary>鑾峰彇鎴栬缃綋鍓嶆父鎴忕姸鎬併€?/summary>
+    public GameState<Board>? CurrentState
+    {
+        get => _currentState;
+        private set
+        {
+            if (SetProperty(ref _currentState, value))
+            {
+                OnPropertyChanged(nameof(LocalizedDifficulty));
+                OnPropertyChanged(nameof(Board));
+                OnPropertyChanged(nameof(GameType));
+                OnPropertyChanged(nameof(IsSamuraiGame));
+                OnPropertyChanged(nameof(IsDiagonalGame));
+                OnPropertyChanged(nameof(IsJigsawGame));
+                OnPropertyChanged(nameof(IsShowingSolution));
+                OnPropertyChanged(nameof(SolutionBoard));
+                UpdateDerivedProperties();
+            }
+        }
+    }
+
+    /// <summary>鑾峰彇鏈湴鍖栫殑闅惧害鏄剧ず鍚嶇О銆?/summary>
+    public string LocalizedDifficulty => CurrentState?.Difficulty.GetDisplayName() ?? AppResources.Medium;
+
+    /// <summary>鑾峰彇褰撳墠妫嬬洏锛堝己鍒惰Е鍙?OnPropertyChanged锛夈€?/summary>
+    public Board? Board
+    {
+        get => CurrentState?.Board;
+        private set { }
+    }
+
+    /// <summary>鑾峰彇鎴栬缃槸鍚︽鍦ㄧ敓鎴愯皽棰樸€?/summary>
+    public bool IsGenerating
+    {
+        get => _isGenerating;
+        private set
+        {
+            if (SetProperty(ref _isGenerating, value))
+            {
+                OnPropertyChanged(nameof(IsStatusBarVisible));
+                OnPropertyChanged(nameof(CurrentGenerationStageText));
+            }
+        }
+    }
+
+    /// <summary>鑾峰彇鎴栬缃綋鍓嶇敓鎴愰樁娈点€?/summary>
+    public GenerationStage CurrentGenerationStage
+    {
+        get => _currentGenerationStage;
+        private set
+        {
+            if (SetProperty(ref _currentGenerationStage, value))
+            {
+                OnPropertyChanged(nameof(CurrentGenerationStageText));
+            }
+        }
+    }
+
+    /// <summary>鑾峰彇褰撳墠鐢熸垚闃舵鐨勬湰鍦板寲鏄剧ず鏂囨湰銆?/summary>
+    public string CurrentGenerationStageText => GetLocalizedStageText(CurrentGenerationStage);
+
+    /// <summary>
+    /// 鑾峰彇鐢熸垚闃舵鐨勬湰鍦板寲鏂囨湰銆?    /// </summary>
+    private static string GetLocalizedStageText(GenerationStage stage) => stage switch
+    {
+        GenerationStage.Initializing => AppResources.Gen_Initializing,
+        GenerationStage.LoadingTemplate => AppResources.Gen_LoadingTemplate,
+        GenerationStage.CreatingRegions => AppResources.Gen_CreatingRegions,
+        GenerationStage.ApplyingSubstitution => AppResources.Gen_ApplyingSubstitution,
+        GenerationStage.GeneratingSolution => AppResources.Gen_GeneratingSolution,
+        GenerationStage.DiggingPuzzle => AppResources.Gen_DiggingPuzzle,
+        GenerationStage.Validating => AppResources.Gen_Validating,
+        GenerationStage.Completed => AppResources.Gen_Completed,
+        GenerationStage.Failed => AppResources.Gen_Failed,
+        _ => stage.ToString()
+    };
+
+    #endregion
+
+    #region 娓告垙鐘舵€佸垽鏂睘鎬?
+    /// <summary>鑾峰彇鏄惁姝ｅ湪娓告垙涓紙宸插紑濮嬩笖鏈畬鎴愶級銆?/summary>
+    public bool IsPlaying => CurrentState?.StartTime != null && !CurrentState.IsCompleted;
+
+    /// <summary>鑾峰彇娓告垙鏄惁宸插畬鎴愩€?/summary>
+    public bool IsGameCompleted => CurrentState?.IsCompleted ?? false;
+
+    /// <summary>鑾峰彇鏄惁鍙互鎾ら攢鎿嶄綔銆?/summary>
+    public bool CanUndo => CurrentState?.CanUndo ?? false;
+
+    /// <summary>鑾峰彇鏄惁鍙互閲嶅仛鎿嶄綔銆?/summary>
+    public bool CanRedo => CurrentState?.CanRedo ?? false;
+
+    /// <summary>鑾峰彇鏄惁澶勪簬绗旇妯″紡銆?/summary>
+    public bool IsMarkMode => CurrentState?.IsMarkMode ?? false;
+
+    /// <summary>鑾峰彇鏄惁鍚敤鑷姩绗旇妯″紡銆?/summary>
+    public bool IsAutoMarkMode => CurrentState?.IsAutoMarkMode ?? false;
+
+    /// <summary>鑾峰彇鏄惁姝ｅ湪鏄剧ず瑙ｇ瓟銆?/summary>
+    public bool IsShowingSolution => CurrentState?.IsShowingSolution ?? false;
+
+    /// <summary>鑾峰彇绛旀妫嬬洏銆?/summary>
+    public Board? SolutionBoard => CurrentState?.Solution;
+
+    #endregion
+
+    #region 鏄剧ず灞炴€?
+    /// <summary>鑾峰彇鎴栬缃凡鐢ㄦ椂闂寸殑鏄剧ず瀛楃涓层€?/summary>
+    public string ElapsedTimeDisplay
+    {
+        get => _elapsedTimeDisplay;
+        private set => SetProperty(ref _elapsedTimeDisplay, value);
+    }
+
+    /// <summary>鑾峰彇鎴栬缃敊璇鏁般€?/summary>
+    public int MistakesCount => CurrentState?.Mistakes ?? 0;
+
+    /// <summary>鑾峰彇鎴栬缃渶浣虫椂闂寸殑鏄剧ず瀛楃涓层€?/summary>
+    public string BestTimeDisplay
+    {
+        get => _bestTimeDisplay;
+        private set => SetProperty(ref _bestTimeDisplay, value);
+    }
+
+    /// <summary>鑾峰彇鎴栬缃畬鎴愮櫨鍒嗘瘮銆?/summary>
+    public double CompletionPercentage
+    {
+        get => _completionPercentage;
+        private set => SetProperty(ref _completionPercentage, value);
+    }
+
+    /// <summary>鑾峰彇鎴栬缃綋鍓嶉€変腑鐨勫崟鍏冩牸銆?/summary>
+    public SudokuCell? SelectedCell
+    {
+        get => _selectedCell;
+        private set => SetProperty(ref _selectedCell, value);
+    }
+
+    /// <summary>鑾峰彇鏁板瓧浣跨敤娆℃暟缁熻銆?/summary>
+    /// <remarks>
+    /// 瀵逛簬姝﹀＋鏁扮嫭锛屽彧璁＄畻褰撳墠瀛愮綉鏍肩殑鏁板瓧璁℃暟锛堜笌Flutter瀹炵幇涓€鑷达級銆?    /// </remarks>
+    public Dictionary<int, int> NumberCounts
+    {
+        get
+        {
+            if (CurrentState?.Board is null) return [];
+
+            // 浣跨敤 GameType 鍒ゆ柇鏄惁鏄澹暟鐙?            if (CurrentState.GameType == GameType.Samurai && CurrentState.Board is Board board)
+            {
+                return CalculateSamuraiSubGridNumberCounts(board, CurrentSubGridIndex);
+            }
+
+            return CurrentState.NumberCounts;
+        }
+    }
+
+    /// <summary>璁＄畻姝﹀＋鏁扮嫭瀛愮綉鏍肩殑鏁板瓧璁℃暟銆?/summary>
+    private static Dictionary<int, int> CalculateSamuraiSubGridNumberCounts(Board board, int subGridIndex)
+    {
+        var counts = new Dictionary<int, int>();
+        for (int i = 1; i <= 9; i++)
+        {
+            counts[i] = 0;
+        }
+
+        // 杈圭晫妫€鏌?        if (subGridIndex < 0 || subGridIndex >= SamuraiConstants.SubGridCount)
+        {
+            return counts;
+        }
+
+        var (startRow, startCol) = SamuraiConstants.SubGridOffsets[subGridIndex];
+        for (int r = 0; r < SamuraiConstants.SubGridSize; r++)
+        {
+            for (int c = 0; c < SamuraiConstants.SubGridSize; c++)
+            {
+                var cell = board.Cells[startRow + r][startCol + c];
+                if (cell.Value != null)
+                {
+                    counts[cell.Value.Value]++;
+                }
+            }
+        }
+
+        return counts;
+    }
+
+    /// <summary>鑾峰彇姣忎釜鏁板瓧鐨勬渶澶т娇鐢ㄦ鏁帮紙姝﹀＋鏁扮嫭涓?锛屽叾浠栦负9锛夈€?/summary>
+    /// <remarks>
+    /// 娉ㄦ剰锛氭澹暟鐙櫧鐒舵暣涓鐩樻湁21x21锛屼絾鏁板瓧閿洏鍙绠楀綋鍓嶅瓙缃戞牸鐨勬暟瀛楄鏁帮紝
+    /// 鎵€浠ユ渶澶т娇鐢ㄦ鏁颁粛鐒舵槸9锛堟瘡涓暟瀛楀湪9x9瀛愮綉鏍间腑鏈€澶氬嚭鐜?娆★級銆?    /// </remarks>
+    public static int MaxNumberCount => 9;
+
+    /// <summary>鑾峰彇鐘舵€佹爮鏄惁鍙锛堢敓鎴愭湡闂撮殣钘忥級銆?/summary>
+    public bool IsStatusBarVisible => !IsGenerating;
+
+    #endregion
+
+    #region 姝﹀＋鏁扮嫭鐗规湁灞炴€?
+    /// <summary>鑾峰彇鎴栬缃澹暟鐙綋鍓嶆樉绀虹殑瀛愮綉鏍肩储寮曪紙0-4锛夈€?/summary>
+    public int CurrentSubGridIndex
+    {
+        get => _currentSubGridIndex;
+        set
+        {
+            if (SetProperty(ref _currentSubGridIndex, value))
+            {
+                OnPropertyChanged(nameof(SubGridLabel));
+                // 閫氱煡鏁板瓧璁℃暟宸插彉鏇达紙鐢ㄤ簬鏇存柊鏁板瓧閿洏锛?                OnPropertyChanged(nameof(NumberCounts));
+                // 濡傛灉澶勪簬鑷姩鍊欓€夋ā寮忎笖娓告垙姝ｅ湪杩涜涓紝閲嶆柊璁＄畻鍊欓€夋暟
+                if (IsAutoMarkMode && IsPlaying && IsSamuraiGame)
+                {
+                    _ = AutoMarkCandidatesAsync([value]);
+                }
+            }
+        }
+    }
+
+    /// <summary>鑾峰彇鎴栬缃槸鍚﹀浜庢澹暟鐙€昏妯″紡銆?/summary>
+    public bool IsOverviewMode
+    {
+        get => _isOverviewMode;
+        set => SetProperty(ref _isOverviewMode, value);
+    }
+
+    /// <summary>鑾峰彇褰撳墠娓告垙绫诲瀷锛堢敤浜?UI 缁戝畾锛夈€?/summary>
+    public GameType GameType => CurrentState?.GameType ?? GameType.Standard;
+
+    /// <summary>鑾峰彇鏄惁涓烘澹暟鐙父鎴忋€?/summary>
+    public bool IsSamuraiGame => CurrentState?.GameType == GameType.Samurai;
+
+    /// <summary>鑾峰彇鏄惁涓哄瑙掔嚎鏁扮嫭娓告垙銆?/summary>
+    public bool IsDiagonalGame => CurrentState?.GameType == GameType.Diagonal;
+
+    /// <summary>鑾峰彇鏄惁涓洪敮榻挎暟鐙父鎴忋€?/summary>
+    public bool IsJigsawGame => CurrentState?.GameType == GameType.Jigsaw;
+
+    /// <summary>鑾峰彇鏄惁涓烘潃鎵嬫暟鐙父鎴忋€?/summary>
+    public bool IsKillerGame => CurrentState?.GameType == GameType.Killer;
+
+    /// <summary>鑾峰彇鎴栬缃槸鍚︽樉绀虹瀛愶紙鏉€鎵嬫暟鐙級銆?/summary>
+    public bool ShowCages
+    {
+        get => _showCages;
+        set => SetProperty(ref _showCages, value);
+    }
+    private bool _showCages = true;
+
+    /// <summary>鑾峰彇姝﹀＋鏁扮嫭瀛愮綉鏍兼爣绛炬枃鏈€?/summary>
+    public string SubGridLabel => _currentSubGridIndex switch
+    {
+        0 => AppResources.SubGrid_TopLeft,
+        1 => AppResources.SubGrid_TopRight,
+        2 => AppResources.SubGrid_BottomLeft,
+        3 => AppResources.SubGrid_BottomRight,
+        4 => AppResources.SubGrid_Center,
+        _ => $"Grid {_currentSubGridIndex + 1}"
+    };
+
+    /// <summary>鑾峰彇鎴栬缃槸鍚︽樉绀哄瑙掔嚎銆?/summary>
+    public bool ShowDiagonalLines
+    {
+        get => _showDiagonalLines;
+        set => SetProperty(ref _showDiagonalLines, value);
+    }
+
+    /// <summary>鑾峰彇鎴栬缃槸鍚︽樉绀哄尯鍩熺紪鍙枫€?/summary>
+    public bool ShowRegionNumbers
+    {
+        get => _showRegionNumbers;
+        set => SetProperty(ref _showRegionNumbers, value);
+    }
+
+    #endregion
+
+    #region 鏈€浣虫垚缁╁睘鎬?
+    /// <summary>鑾峰彇鏈€浣虫垚缁╂槸鍚﹀凡鍔犺浇銆?/summary>
+    public bool IsBestScoreLoaded => _isBestScoreLoaded;
+
+    /// <summary>鑾峰彇鏈€浣虫垚缁╃殑閿欒鏁帮紙鏃犺褰曟椂杩斿洖 null锛夈€?/summary>
+    public int? BestScoreMistakes => _cachedBestScore?.Mistakes;
+
+    #endregion
+
+    #region 瀵艰埅鍛戒护
+
+    /// <summary>杩斿洖涓婁竴椤甸潰鍛戒护銆?/summary>
+    [RelayCommand]
+    private static async Task Back()
+    {
+        if (Shell.Current.Navigation.NavigationStack.Count > 1)
+            await Shell.Current.Navigation.PopAsync();
+        else
+            await Shell.Current.GoToAsync("//home");
+    }
+
+    /// <summary>甯姪椤甸潰瀵艰埅鍛戒护銆?/summary>
+    [RelayCommand]
+    private static async Task Help() => await Shell.Current.Navigation.PushAsync(new Views.RulesPage());
+
+    /// <summary>璁剧疆椤甸潰瀵艰埅鍛戒护銆?/summary>
+    [RelayCommand]
+    private static async Task Settings() => await Shell.Current.Navigation.PushAsync(new Views.SettingsPage());
+
+    #endregion
+
+    #region 鏄剧ず鍒囨崲鍛戒护
+
+    /// <summary>鍒囨崲瀵硅绾挎樉绀哄懡浠ゃ€?/summary>
+    [RelayCommand]
+    private void ToggleDiagonalLines() => ShowDiagonalLines = !ShowDiagonalLines;
+
+    /// <summary>鍒囨崲鍖哄煙缂栧彿鏄剧ず鍛戒护銆?/summary>
+    [RelayCommand]
+    private void ToggleRegionNumbers() => ShowRegionNumbers = !ShowRegionNumbers;
+
+    /// <summary>鍒囨崲绗煎瓙鏄剧ず鍛戒护锛堟潃鎵嬫暟鐙級銆?/summary>
+    [RelayCommand]
+    private void ToggleCages() => ShowCages = !ShowCages;
+
+    /// <summary>鍒囨崲姝﹀＋鏁扮嫭鎬昏妯″紡鍛戒护銆?/summary>
+    [RelayCommand]
+    private void ToggleOverview() => IsOverviewMode = !IsOverviewMode;
+
+    /// <summary>鍒囨崲鍒颁笂涓€涓澹暟鐙瓙缃戞牸銆?/summary>
+    [RelayCommand]
+    private void SwitchSubGridPrev()
+    {
+        CurrentSubGridIndex = (CurrentSubGridIndex + 4) % 5;
+        IsOverviewMode = false;
+    }
+
+    /// <summary>鍒囨崲鍒颁笅涓€涓澹暟鐙瓙缃戞牸銆?/summary>
+    [RelayCommand]
+    private void SwitchSubGridNext()
+    {
+        CurrentSubGridIndex = (CurrentSubGridIndex + 1) % 5;
+        IsOverviewMode = false;
+    }
+
+    #endregion
+
+    #region 娓告垙鐢熷懡鍛ㄦ湡鏂规硶
+
+    /// <summary>
+    /// 寮傛鍒濆鍖栨父鎴忥紝鏍规嵁鍙傛暟鍐冲畾鍒涘缓鏂版父鎴忔垨鍔犺浇宸蹭繚瀛樼殑娓告垙銆?    /// </summary>
+    /// <param name="parameter">瀵艰埅鍙傛暟锛屽寘鍚?GameType銆丏ifficulty銆両sNewGame銆?/param>
+    /// <returns>鍒濆鍖栧畬鎴愮殑浠诲姟銆?/returns>
+    public override async Task InitializeAsync(object? parameter = null)
+    {
+        if (parameter is not Dictionary<string, object> paramsDict)
+            return;
+
+        var gameType = paramsDict.TryGetValue("GameType", out var gt) ? (GameType)gt : GameType.Standard;
+        var difficulty = paramsDict.TryGetValue("Difficulty", out var diff) ? (Difficulty)diff : Difficulty.Medium;
+        var isNewGame = paramsDict.TryGetValue("IsNewGame", out var isNew) && (bool)isNew;
+
+        // 鏀寔鑷畾涔夋鐩?        if (paramsDict.TryGetValue("CustomBoardJson", out var boardJsonObj) && boardJsonObj is string boardJsonStr)
+        {
+            var customBoard = DeserializeCustomBoard(boardJsonStr, gameType);
+            if (customBoard != null)
+            {
+                CurrentState = new GameState<Board>
+                {
+                    Board = customBoard,
+                    InitialBoard = customBoard.DeepCopy(),
+                    Solution = customBoard,
+                    GameType = gameType,
+                    Difficulty = difficulty,
+                    Status = GameStatus.Playing,
+                    StartTime = DateTime.Now,
+                    History = [customBoard],
+                    HistoryIndex = 0
+                };
+                Title = GetLocalizedGameTypeName(gameType);
+                UpdateDerivedProperties();
+                StartTimer();
+                return;
+            }
+        }
+
+        if (isNewGame)
+        {
+            await StartNewGameAsync(gameType, difficulty);
+        }
+        else
+        {
+            await LoadSavedGameAsync(gameType, difficulty);
+        }
+
+        // 骞惰鍔犺浇鏈€浣虫垚缁?        _ = LoadBestScoreAsync(gameType, difficulty);
+    }
+
+    #region 瀵艰埅鐘舵€佺鐞?
+    /// <summary>
+    /// 澶勭悊椤甸潰瀵艰埅鍒颁簨浠?    /// </summary>
+    public async Task HandleNavigatedToAsync(IDictionary<string, object>? parameters)
+    {
+        System.Diagnostics.Debug.WriteLine($"[GameViewModel] HandleNavigatedToAsync: parameters={(parameters != null ? parameters.Count : -1)}, CurrentState={(CurrentState != null ? "exists" : "null")}, _lastGameType={_lastGameType}, _lastDifficulty={_lastDifficulty}");
+
+        if (parameters != null && parameters.Count > 0)
+        {
+            await InitializeAsync(parameters);
+            _isFirstNavigation = false;
+            _hasActiveGame = true;
+
+            if (parameters.TryGetValue("GameType", out var gt) && gt is GameType gameType)
+            {
+                _lastGameType = gameType;
+            }
+            if (parameters.TryGetValue("Difficulty", out var diff) && diff is Difficulty difficulty)
+            {
+                _lastDifficulty = difficulty;
+            }
+        }
+        else if (CurrentState != null)
+        {
+            _hasActiveGame = true;
+        }
+        else if (_lastGameType.HasValue && _lastDifficulty.HasValue)
+        {
+            System.Diagnostics.Debug.WriteLine($"[GameViewModel] HandleNavigatedToAsync: Restoring with lastGameType={_lastGameType}, lastDifficulty={_lastDifficulty}");
+            await InitializeAsync(new Dictionary<string, object>
+            {
+                { "GameType", _lastGameType.Value },
+                { "Difficulty", _lastDifficulty.Value },
+                { "IsNewGame", false }
+            });
+        }
+    }
+
+    /// <summary>
+    /// 澶勭悊椤甸潰绂诲紑浜嬩欢
+    /// </summary>
+    public void HandleNavigatedFrom()
+    {
+        SaveGameDebounced();
+    }
+
+    /// <summary>
+    /// 妫€鏌ユ槸鍚﹂渶瑕侀噸鏂板垵濮嬪寲瑙嗗浘
+    /// </summary>
+    public bool ShouldReinitializeView()
+    {
+        return _isFirstNavigation || !_hasActiveGame;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 寮傛娓呯悊 ViewModel 璧勬簮銆?    /// </summary>
+    public override Task CleanupAsync()
+    {
+        StopTimer();
+        CancelAutoMarkDebounce();
+        CancelSaveDebounce();
+        _generationCts?.Cancel();
+        _generationCts?.Dispose();
+        return base.CleanupAsync();
+    }
+
+    /// <summary>
+    /// 寮傛寮€濮嬫柊娓告垙銆?    /// </summary>
+    /// <param name="gameType">娓告垙绫诲瀷銆?/param>
+    /// <param name="difficulty">闅惧害绛夌骇銆?/param>
+    private async Task StartNewGameAsync(GameType gameType, Difficulty difficulty)
+    {
+        IsGenerating = true;
+        Title = GetLocalizedGameTypeName(gameType);
+
+        // Allow UI to update (show generation overlay and hide board/keyboard)
+        // before heavy generation work starts. This yields to the message loop so
+        // the view can reflect IsGenerating immediately.
+        await Task.Yield();
+
+        // 閲嶇疆姝﹀＋鏁扮嫭鐘舵€?        if (gameType == GameType.Samurai)
+        {
+            _currentSubGridIndex = 4; // 榛樿鏄剧ず涓績缃戞牸
+            _isOverviewMode = false;
+            OnPropertyChanged(nameof(CurrentSubGridIndex));
+            OnPropertyChanged(nameof(IsOverviewMode));
+        }
+
+        _generationCts = new CancellationTokenSource();
+
+        var progress = new Progress<GenerationStage>(stage =>
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                CurrentGenerationStage = stage;
+            });
+        });
+
+        try
+        {
+            // 灏嗚€楁椂鐨勭敓鎴愬伐浣滄斁鍒板悗鍙扮嚎绋嬫墽琛岋紝鍏佽 UI 绾跨▼淇濇寔鍝嶅簲骞舵樉绀虹敓鎴愰伄缃┿€?            var state = await Task.Run(async () => await _gameService.CreateNewGameAsync(gameType, difficulty, _generationCts.Token, progress));
+
+            // 鍦ㄤ富绾跨▼鏇存柊鐘舵€佷笌 UI
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                CurrentState = state;
+                IsGenerating = false;
+                UpdateDerivedProperties();
+                StartTimer();
+            });
+
+            // 鎾斁寮€濮嬮煶鏁堬紙涓嶄緷璧?UI 鎿嶄綔锛?            await _audioService.PlayStartSoundAsync();
+        }
+        catch (OperationCanceledException)
+        {
+            // 鍙栨秷鏃剁‘淇濆湪涓荤嚎绋嬫洿鏂扮姸鎬?            MainThread.BeginInvokeOnMainThread(() => IsGenerating = false);
+            await Shell.Current.DisplayAlertAsync(
+                AppResources.Cancel,
+                AppResources.Gen_UserCancelled,
+                AppResources.Button_OK);
+            await NavigationService.GoToRootAsync();
+        }
+        catch (Exception ex)
+        {
+            MainThread.BeginInvokeOnMainThread(() => IsGenerating = false);
+            await Shell.Current.DisplayAlertAsync(
+                AppResources.Error,
+                ex.Message,
+                AppResources.Button_OK);
+            await NavigationService.GoToRootAsync();
+        }
+    }
+
+    /// <summary>
+    /// 寮傛鍔犺浇宸蹭繚瀛樼殑娓告垙銆?    /// </summary>
+    /// <param name="gameType">娓告垙绫诲瀷銆?/param>
+    /// <param name="difficulty">闅惧害绛夌骇銆?/param>
+    private async Task LoadSavedGameAsync(GameType gameType, Difficulty difficulty)
+    {
+        var savedState = await _storageService.LoadGameAsync(gameType, difficulty);
+        if (savedState is not null)
+        {
+            CurrentState = savedState;
+            Title = GetLocalizedGameTypeName(gameType);
+            ElapsedTimeDisplay = FormatTime(savedState.ElapsedTime);
+            UpdateDerivedProperties();
+
+            if (!savedState.IsCompleted)
+            {
+                StartTimer();
+            }
+        }
+        else
+        {
+            await StartNewGameAsync(gameType, difficulty);
+        }
+    }
+
+    /// <summary>
+    /// 鍙栨秷娓告垙鐢熸垚銆?    /// </summary>
+    [RelayCommand]
+    private void CancelGeneration()
+    {
+        _generationCts?.Cancel();
+        IsGenerating = false;
+    }
+
+    /// <summary>
+    /// 寮€濮嬫柊娓告垙鍛戒护锛岄噸鏂扮敓鎴愬綋鍓嶇被鍨嬪拰闅惧害鐨勬柊娓告垙銆?    /// </summary>
+    [RelayCommand]
+    private async Task NewGame()
+    {
+        if (CurrentState is null) return;
+        StopTimer();
+        await StartNewGameAsync(CurrentState.GameType, CurrentState.Difficulty);
+    }
+
+    /// <summary>
+    /// 鏆傚仠娓告垙鍛戒护銆?    /// </summary>
+    [RelayCommand]
+    private void Pause() => StopTimer();
+
+    /// <summary>
+    /// 鎭㈠娓告垙鍛戒护銆?    /// </summary>
+    [RelayCommand]
+    private void Resume() => StartTimer();
+
+    /// <summary>
+    /// 閲嶇疆娓告垙鍛戒护锛屾仮澶嶅埌鍒濆璋滈鐘舵€併€?    /// </summary>
+    [RelayCommand]
+    private void ResetGame()
+    {
+        if (CurrentState is null) return;
+        StopTimer();
+        CurrentState = CurrentState.ResetGame();
+        ElapsedTimeDisplay = "00:00";
+        UpdateDerivedProperties();
+    }
+
+    #endregion
+
+    #region 鍗曞厓鏍兼搷浣滄柟娉?
+    /// <summary>
+    /// 閫変腑鍗曞厓鏍煎懡浠わ紝鏇存柊閫変腑鐘舵€併€?    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanSelectCell))]
+    private void SelectCell(SudokuCell? cell)
+    {
+        if (cell is null || CurrentState is null || CurrentState.Board is null || IsGameCompleted)
+            return;
+
+        _inputHandler?.SelectCell(cell.Row, cell.Col);
+        SelectedCell = CurrentState.GetSelectedCell();
+        UpdateDerivedProperties();
+    }
+
+    /// <summary>鑾峰彇鏄惁鍙互閫変腑鍗曞厓鏍笺€?/summary>
+    public bool CanSelectCell => CurrentState is not null && CurrentState.Board is not null && !IsGameCompleted;
+
+    /// <summary>鑾峰彇鏄惁鍙互杈撳叆鏁板瓧銆?/summary>
+    public bool CanInputNumber => CurrentState is not null && CurrentState.Board is not null && !IsGameCompleted && CurrentState.GetSelectedCell() is not null && !CurrentState.GetSelectedCell()!.IsFixed;
+
+    /// <summary>鑾峰彇鏄惁鍙互鎿﹂櫎銆?/summary>
+    public bool CanErase => CurrentState is not null && CurrentState.Board is not null && !IsGameCompleted && CurrentState.GetSelectedCell() is not null && !CurrentState.GetSelectedCell()!.IsFixed;
+
+    /// <summary>
+    /// 澶勭悊鍗曞厓鏍肩偣鍑汇€?    /// </summary>
+    /// <param name="row">琛岀储寮曘€?/param>
+    /// <param name="col">鍒楃储寮曘€?/param>
+    public async Task HandleCellTapAsync(int row, int col)
+    {
+        if (!IsPlaying || CurrentState?.Board is null) return;
+
+        try
+        {
+            // 浣跨敤 Handler 澶勭悊鍗曞厓鏍肩偣鍑?            _inputHandler?.SelectCell(row, col);
+            
+            // 鏇存柊閫変腑鍗曞厓鏍肩姸鎬?            SelectedCell = CurrentState.GetSelectedCell();
+        }
+        catch (Exception ex)
+        {
+            HandleError("澶勭悊鍗曞厓鏍肩偣鍑诲け璐?, ex);
+        }
+    }
+
+    /// <summary>
+    /// 杈撳叆鏁板瓧鍛戒护锛屽湪閫変腑鍗曞厓鏍煎～鍏ユ寚瀹氭暟瀛椼€?    /// </summary>
+    /// <param name="number">瑕佸～鍏ョ殑鏁板瓧锛?-9锛夈€?/param>
+    [RelayCommand(CanExecute = nameof(CanInputNumber))]
+    private async Task InputNumber(int number)
+    {
+        if (CurrentState is null || CurrentState.Board is null || IsGameCompleted)
+            return;
+
+        var cell = CurrentState.GetSelectedCell();
+        if (cell is null || cell.IsFixed)
+            return;
+
+        if (CurrentState.IsMarkMode)
+        {
+            await ToggleCandidateAsync(cell.Row, cell.Col, number);
+        }
+        else
+        {
+            await SetCellValueAsync(cell.Row, cell.Col, number);
+        }
+    }
+
+    /// <summary>
+    /// 璁剧疆鍗曞厓鏍煎€笺€?    /// </summary>
+    /// <param name="row">琛岀储寮曘€?/param>
+    /// <param name="col">鍒楃储寮曘€?/param>
+    /// <param name="value">瑕佽缃殑鍊笺€?/param>
+    private async Task SetCellValueAsync(int row, int col, int? value)
+    {
+        if (!IsPlaying) return;
+
+        try
+        {
+            // 浣跨敤 Handler 澶勭悊鍗曞厓鏍煎€艰缃?            _inputHandler?.SetCellValue(row, col, value);
+
+            // 鏇存柊娲剧敓灞炴€э紙鍖呮嫭NumberCounts锛?            UpdateDerivedProperties();
+
+            // 妫€鏌ユ父鎴忔槸鍚﹀畬鎴?            if (CurrentState?.IsCompleted == true)
+            {
+                StopTimer();
+                await _audioService.PlayCompleteSoundAsync();
+                await HandleGameCompletionAsync();
+            }
+
+            // 鑷姩鏍囪妯″紡涓嬮噸鏂拌绠楀€欓€夋暟
+            if (CurrentState?.IsAutoMarkMode == true && IsPlaying)
+            {
+                if (IsSamuraiGame)
+                {
+                    await AutoMarkCandidatesAsync([CurrentSubGridIndex]);
+                }
+                else
+                {
+                    await AutoMarkCandidatesAsync();
+                }
+            }
+
+            await SaveGameAsync();
+        }
+        catch (Exception ex)
+        {
+            HandleError("璁剧疆鍗曞厓鏍煎€煎け璐?, ex);
+        }
+    }
+
+    /// <summary>
+    /// 鍒囨崲鍊欓€夋暟鏍囪銆?    /// </summary>
+    /// <param name="row">琛岀储寮曘€?/param>
+    /// <param name="col">鍒楃储寮曘€?/param>
+    /// <param name="candidate">鍊欓€夋暟瀛椼€?/param>
+    private async Task ToggleCandidateAsync(int row, int col, int candidate)
+    {
+        if (!IsPlaying || CurrentState?.Board is null) return;
+
+        try
+        {
+            // 浣跨敤 Handler 澶勭悊鍊欓€夋暟鍒囨崲
+            _inputHandler?.ToggleCandidate(row, col, candidate);
+            await SaveGameAsync();
+        }
+        catch (Exception ex)
+        {
+            HandleError("鍒囨崲鍊欓€夋暟澶辫触", ex);
+        }
+    }
+
+    /// <summary>
+    /// 鎿﹂櫎鍛戒护锛屾竻闄ら€変腑鍗曞厓鏍肩殑鏁板瓧銆?    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanErase))]
+    private async Task Erase()
+    {
+        if (CurrentState is null || IsGameCompleted) return;
+
+        var selectedCell = CurrentState.GetSelectedCell();
+        if (selectedCell is null || selectedCell.IsFixed) return;
+
+        // 浣跨敤 Handler 澶勭悊鎿﹂櫎鎿嶄綔
+        _inputHandler?.ClearCell(selectedCell.Row, selectedCell.Col);
+
+        // 鑷姩鏍囪妯″紡涓嬮噸鏂拌绠楀€欓€夋暟
+        if (CurrentState?.IsAutoMarkMode == true && IsPlaying)
+        {
+            if (IsSamuraiGame)
+            {
+                await AutoMarkCandidatesAsync([CurrentSubGridIndex]);
+            }
+            else
+            {
+                await AutoMarkCandidatesAsync();
+            }
+        }
+
+        await SaveGameAsync();
+    }
+
+    #endregion
+
+    #region 鍔熻兘閿洏鐩稿叧鏂规硶
+
+    /// <summary>
+    /// 鎾ら攢鍛戒护锛屾仮澶嶅埌涓婁竴姝ユ搷浣滅姸鎬併€?    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUndo))]
+    private void Undo()
+    {
+        if (CurrentState is null || !IsPlaying) return;
+        // 浣跨敤 Handler 澶勭悊鎾ら攢鎿嶄綔
+        _lifecycleHandler?.Undo();
+        UpdateDerivedProperties();
+        SaveGameDebounced();
+    }
+
+    /// <summary>
+    /// 閲嶅仛鍛戒护锛屾仮澶嶈鎾ら攢鐨勬搷浣溿€?    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRedo))]
+    private void Redo()
+    {
+        if (CurrentState is null || !IsPlaying) return;
+        // 浣跨敤 Handler 澶勭悊閲嶅仛鎿嶄綔
+        _lifecycleHandler?.Redo();
+        UpdateDerivedProperties();
+        SaveGameDebounced();
+    }
+
+    /// <summary>
+    /// 鎻愮ず鍛戒护锛屽湪褰撳墠妫嬬洏濉叆涓€涓纭暟瀛椼€?    /// </summary>
+    [RelayCommand]
+    private async Task Hint()
+    {
+        if (CurrentState is null || IsGameCompleted)
+            return;
+
+        // 浣跨敤 Handler 澶勭悊鎻愮ず閫昏緫
+        _assistHandler?.ProvideHint();
+
+        // 妫€鏌ユ父鎴忔槸鍚﹀畬鎴?        if (CurrentState?.IsCompleted == true)
+        {
+            StopTimer();
+            await _audioService.PlayCompleteSoundAsync();
+            await HandleGameCompletionAsync();
+        }
+
+        await SaveGameAsync();
+    }
+
+    /// <summary>
+    /// 鍒囨崲绗旇妯″紡鍛戒护銆?    /// </summary>
+    [RelayCommand]
+    private void ToggleMarkMode()
+    {
+        if (CurrentState is null) return;
+        // 浣跨敤 Handler 澶勭悊鏍囪妯″紡鍒囨崲
+        _lifecycleHandler?.ToggleMarkMode();
+        OnPropertyChanged(nameof(IsMarkMode));
+    }
+
+    /// <summary>
+    /// 鍒囨崲鑷姩绗旇妯″紡鍛戒护銆?    /// </summary>
+    [RelayCommand]
+    private async Task ToggleAutoMarkMode()
+    {
+        if (CurrentState is null || CurrentState.Board is null) return;
+
+        // 浣跨敤 Handler 澶勭悊鑷姩鏍囪妯″紡鍒囨崲
+        _lifecycleHandler?.ToggleAutoMarkMode();
+
+        // 濡傛灉鍒氬紑鍚嚜鍔ㄦ爣璁帮紝绔嬪嵆璁＄畻涓€娆″€欓€夋暟
+        if (CurrentState.IsAutoMarkMode && CurrentState.Board is not null)
+        {
+            if (IsSamuraiGame)
+            {
+                await AutoMarkCandidatesAsync([CurrentSubGridIndex]);
+            }
+            else
+            {
+                await AutoMarkCandidatesAsync();
+            }
+        }
+        else if (!CurrentState.IsAutoMarkMode)
+        {
+            await ClearAllCandidatesAsync();
+        }
+
+        OnPropertyChanged(nameof(IsAutoMarkMode));
+    }
+
+    /// <summary>
+    /// 鏄剧ず瑙ｇ瓟鍛戒护銆?    /// </summary>
+    [RelayCommand]
+    private void ShowSolution()
+    {
+        if (CurrentState is null) return;
+        // 浣跨敤 Handler 澶勭悊瑙ｇ瓟鏄剧ず鍒囨崲
+        _lifecycleHandler?.ToggleShowSolution();
+        OnPropertyChanged(nameof(IsShowingSolution));
+    }
+
+    #endregion
+
+    #region 鑷姩鏍囪鍊欓€夋暟
+
+    /// <summary>
+    /// 鑷姩鏍囪鍊欓€夋暟銆?    /// </summary>
+    /// <param name="visibleSubBoards">鍙瀛愮綉鏍肩储寮曞垪琛紙浠呮澹暟鐙娇鐢級銆?/param>
+    private async Task AutoMarkCandidatesAsync(int[]? visibleSubBoards = null)
+    {
+        // 鍙栨秷涔嬪墠鐨勯槻鎶栬鏃跺櫒
+        CancelAutoMarkDebounce();
+
+        _autoMarkDebounceCts = new CancellationTokenSource();
+        var token = _autoMarkDebounceCts.Token;
+
+        try
+        {
+            // 闃叉姈寤惰繜
+            await Task.Delay(100, token);
+
+            if (token.IsCancellationRequested || CurrentState?.Board is null || _isCalculatingCandidates)
+                return;
+
+            _isCalculatingCandidates = true;
+
+            var board = CurrentState.Board;
+            var calculator = new CandidateCalculator(board);
+            var useAdvancedStrategies = _settingsService.IsAdvancedStrategyEnabled;
+
+            Dictionary<string, HashSet<int>> candidates;
+
+            // 濡傛灉鏄澹暟鐙笖鏈夊彲瑙佸瓙妫嬬洏锛屽彧璁＄畻鍙瀛愭鐩樼殑鍊欓€夋暟
+            if (board is SamuraiBoard && visibleSubBoards != null)
+            {
+                candidates = calculator.ComputeSamuraiCandidates(visibleSubBoards, useAdvancedStrategies);
+            }
+            else
+            {
+                candidates = calculator.ComputeAllCandidates(useAdvancedStrategies);
+            }
+
+            // 鏇存柊妫嬬洏鍊欓€夋暟
+            var newBoard = board;
+
+            if (board is SamuraiBoard samuraiBoard && visibleSubBoards != null)
+            {
+                // 鍙洿鏂板彲瑙佸瓙妫嬬洏鐨勫€欓€夋暟
+                foreach (var subBoardIndex in visibleSubBoards)
+                {
+                    // 杈圭晫妫€鏌?                    if (subBoardIndex < 0 || subBoardIndex >= SamuraiConstants.SubGridCount)
+                        continue;
+                    
+                    var (startRow, startCol) = SamuraiConstants.SubGridOffsets[subBoardIndex];
+                    for (int row = startRow; row < startRow + 9; row++)
+                    {
+                        for (int col = startCol; col < startCol + 9; col++)
+                        {
+                            var key = $"{row},{col}";
+                            if (candidates.TryGetValue(key, out var cellCandidates))
+                            {
+                                newBoard = newBoard.SetCellCandidates(row, col, [.. cellCandidates]);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // 鏇存柊鏁翠釜妫嬬洏鐨勫€欓€夋暟
+                for (int row = 0; row < newBoard.Size; row++)
+                {
+                    for (int col = 0; col < newBoard.Size; col++)
+                    {
+                        var key = $"{row},{col}";
+                        if (candidates.TryGetValue(key, out var cellCandidates))
+                        {
+                            newBoard = newBoard.SetCellCandidates(row, col, [.. cellCandidates]);
+                        }
+                    }
+                }
+            }
+
+            CurrentState = CurrentState.CopyWith(board: newBoard);
+        }
+        catch (OperationCanceledException)
+        {
+            // 闃叉姈鍙栨秷锛屾甯告儏鍐?        }
+        finally
+        {
+            _isCalculatingCandidates = false;
+        }
+    }
+
+    /// <summary>
+    /// 娓呴櫎鎵€鏈夊€欓€夋暟銆?    /// </summary>
+    private async Task ClearAllCandidatesAsync()
+    {
+        if (CurrentState?.Board is null) return;
+
+        var newBoard = CurrentState.Board;
+
+        for (int row = 0; row < CurrentState.Board.Size; row++)
+        {
+            for (int col = 0; col < CurrentState.Board.Size; col++)
+            {
+                var cell = CurrentState.Board.GetCell(row, col);
+                if (!cell.IsFixed && cell.Value == null)
+                {
+                    newBoard = newBoard.SetCellCandidates(row, col, []);
+                }
+            }
+        }
+
+        CurrentState = CurrentState.CopyWith(board: newBoard);
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 鍙栨秷鑷姩鏍囪闃叉姈璁℃椂鍣ㄣ€?    /// </summary>
+    private void CancelAutoMarkDebounce()
+    {
+        _autoMarkDebounceCts?.Cancel();
+        _autoMarkDebounceCts?.Dispose();
+        _autoMarkDebounceCts = null;
+    }
+
+    #endregion
+
+    #region 娓告垙鎸佷箙鍖?
+    /// <summary>
+    /// 寮傛淇濆瓨娓告垙鍒板瓨鍌ㄣ€?    /// </summary>
+    private async Task SaveGameAsync()
+    {
+        if (CurrentState is null || CurrentState.Board is null || CurrentState.IsCompleted)
+            return;
+
+        try
+        {
+            await _storageService.SaveGameAsync(CurrentState);
+        }
+        catch
+        {
+            // 鑷姩淇濆瓨澶辫触鏃堕潤榛樺鐞?        }
+    }
+
+    /// <summary>
+    /// 闃叉姈淇濆瓨娓告垙銆?    /// </summary>
+    public void SaveGameDebounced()
+    {
+        CancelSaveDebounce();
+
+        _saveDebounceCts = new CancellationTokenSource();
+        var token = _saveDebounceCts.Token;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(1000, token);
+                if (!token.IsCancellationRequested)
+                {
+                    await SaveGameAsync();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // 闃叉姈鍙栨秷锛屾甯告儏鍐?            }
+        }, token);
+    }
+
+    /// <summary>
+    /// 鍙栨秷淇濆瓨闃叉姈璁℃椂鍣ㄣ€?    /// </summary>
+    private void CancelSaveDebounce()
+    {
+        _saveDebounceCts?.Cancel();
+        _saveDebounceCts?.Dispose();
+        _saveDebounceCts = null;
+    }
+
+    #endregion
+
+    #region 璁℃椂鍣?
+    /// <summary>
+    /// 鍚姩璁℃椂鍣ㄣ€?    /// </summary>
+    private void StartTimer()
+    {
+        _timerHandler?.StartTimer(() => OnTimerTick(this, EventArgs.Empty));
+    }
+
+    /// <summary>
+    /// 鍋滄璁℃椂鍣ㄣ€?    /// </summary>
+    private void StopTimer()
+    {
+        _timerHandler?.StopTimer();
+    }
+
+    /// <summary>
+    /// 璁℃椂鍣ㄨЕ鍙戜簨浠跺鐞嗭紝鏇存柊宸茬敤鏃堕棿銆?    /// </summary>
+    private void OnTimerTick(object? sender, EventArgs e)
+    {
+        if (CurrentState is null) return;
+        var newTime = CurrentState.ElapsedTime + 1;
+        CurrentState = CurrentState.UpdateElapsedTime(newTime);
+        ElapsedTimeDisplay = FormatTime(newTime);
+    }
+
+    #endregion
+
+    #region 娓告垙瀹屾垚澶勭悊
+
+    /// <summary>
+    /// 妫€鏌ユ父鎴忔槸鍚﹀凡瀹屾垚锛屽鏋滃畬鎴愬垯璁板綍缁熻骞跺鑸埌瀹屾垚椤甸潰銆?    /// </summary>
+    private async Task HandleGameCompletionAsync()
+    {
+        if (CurrentState is null || CurrentState.Board is null)
+            return;
+
+        var gameType = CurrentState.GameType;
+        var difficulty = CurrentState.Difficulty;
+        var time = CurrentState.ElapsedTime;
+        var mistakes = CurrentState.Mistakes;
+        var hintsUsed = CurrentState.HintsUsed;
+
+        await _statisticsService.RecordGameAsync(gameType, difficulty, time, mistakes, hintsUsed, true);
+        await GameStorageService.DeleteGameAsync(gameType, difficulty);
+
+        var isNewRecord = await _statisticsService.IsNewBestScoreAsync(gameType, difficulty, time, mistakes);
+
+        await NavigationService.GoToAsync(nameof(Views.CompletionPage), new Dictionary<string, object>
+        {
+            { "GameState", CurrentState },
+            { "IsNewRecord", isNewRecord }
+        });
+    }
+
+    #endregion
+
+    #region 鏈€浣虫垚缁?
+    /// <summary>
+    /// 寮傛鍔犺浇鏈€浣虫椂闂淬€?    /// </summary>
+    /// <param name="gameType">娓告垙绫诲瀷銆?/param>
+    /// <param name="difficulty">闅惧害绛夌骇銆?/param>
+    private async Task LoadBestScoreAsync(GameType gameType, Difficulty difficulty)
+    {
+        try
+        {
+            _cachedBestScore = await _statisticsService.GetBestScoreAsync(gameType, difficulty);
+            _isBestScoreLoaded = true;
+            BestTimeDisplay = _cachedBestScore != null ? FormatTime(_cachedBestScore.Time) : "--:--";
+            OnPropertyChanged(nameof(IsBestScoreLoaded));
+            OnPropertyChanged(nameof(BestScoreMistakes));
+        }
+        catch
+        {
+            _cachedBestScore = null;
+            _isBestScoreLoaded = true;
+            BestTimeDisplay = "--:--";
+        }
+    }
+
+    #endregion
+
+    #region 杈呭姪鏂规硶
+
+    /// <summary>
+    /// 鏇存柊浠庡綋鍓嶇姸鎬佹淳鐢熺殑灞炴€с€?    /// </summary>
+    private void UpdateDerivedProperties()
+    {
+        if (CurrentState is null) return;
+
+        CompletionPercentage = CurrentState.CompletionPercentage;
+        SelectedCell = CurrentState.GetSelectedCell();
+
+        OnPropertyChanged(nameof(Board));
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+        OnPropertyChanged(nameof(CanSelectCell));
+        OnPropertyChanged(nameof(IsMarkMode));
+        OnPropertyChanged(nameof(IsAutoMarkMode));
+        OnPropertyChanged(nameof(IsShowingSolution));
+        OnPropertyChanged(nameof(NumberCounts));
+        OnPropertyChanged(nameof(LocalizedDifficulty));
+        OnPropertyChanged(nameof(IsSamuraiGame));
+        OnPropertyChanged(nameof(IsDiagonalGame));
+        OnPropertyChanged(nameof(IsJigsawGame));
+        OnPropertyChanged(nameof(IsKillerGame));
+        OnPropertyChanged(nameof(SubGridLabel));
+        OnPropertyChanged(nameof(IsPlaying));
+        OnPropertyChanged(nameof(IsGameCompleted));
+        OnPropertyChanged(nameof(MistakesCount));
+
+        // 閫氱煡鎵€鏈夊懡浠ょ殑CanExecute鐘舵€佸凡鏀瑰彉
+        SelectCellCommand.NotifyCanExecuteChanged();
+        UndoCommand.NotifyCanExecuteChanged();
+        RedoCommand.NotifyCanExecuteChanged();
+        InputNumberCommand.NotifyCanExecuteChanged();
+        EraseCommand.NotifyCanExecuteChanged();
+        HintCommand.NotifyCanExecuteChanged();
+
+        // 閫氱煡CanExecute鐩稿叧灞炴€?        OnPropertyChanged(nameof(CanInputNumber));
+        OnPropertyChanged(nameof(CanErase));
+    }
+
+    /// <summary>
+    /// 灏嗙鏁版牸寮忓寲涓烘椂闂存樉绀哄瓧绗︿覆銆?    /// </summary>
+    /// <param name="seconds">绉掓暟銆?/param>
+    /// <returns>鏍煎紡鍖栫殑鏃堕棿瀛楃涓诧紙MM:SS 鎴?HH:MM:SS锛夈€?/returns>
+    private static string FormatTime(int seconds)
+    {
+        if (seconds < 0) seconds = 0;
+        var ts = TimeSpan.FromSeconds(seconds);
+        if (ts.TotalHours >= 1)
+        {
+            return ts.ToString(@"hh\:mm\:ss");
+        }
+        return ts.ToString(@"mm\:ss");
+    }
+
+    /// <summary>
+    /// 鑾峰彇鏈湴鍖栫殑娓告垙绫诲瀷鍚嶇О銆?    /// </summary>
+    /// <param name="gameType">娓告垙绫诲瀷銆?/param>
+    /// <returns>鏈湴鍖栫殑娓告垙绫诲瀷鍚嶇О銆?/returns>
+    private static string GetLocalizedGameTypeName(GameType gameType)
+    {
+        return gameType switch
+        {
+            GameType.Standard => AppResources.StandardSudoku,
+            GameType.Jigsaw => AppResources.JigsawSudoku,
+            GameType.Diagonal => AppResources.DiagonalSudoku,
+            GameType.Window => AppResources.WindowSudoku,
+            GameType.Killer => AppResources.KillerSudoku,
+            GameType.Samurai => AppResources.SamuraiSudoku,
+            GameType.Custom => AppResources.CustomSudoku,
+            _ => AppResources.StandardSudoku
+        };
+    }
+
+    /// <summary>
+    /// 鑾峰彇鏁板瓧浣跨敤娆℃暟銆?    /// </summary>
+    /// <param name="number">鏁板瓧銆?/param>
+    /// <returns>浣跨敤娆℃暟銆?/returns>
+    public int? GetNumberCount(int number)
+    {
+        if (IsSamuraiGame && CurrentState?.Board is SamuraiBoard samuraiBoard)
+        {
+            // Samurai 浠呰绠楀綋鍓嶅瓙缃戞牸鐨勬暟瀛楄鏁?            var subBoard = samuraiBoard.GetSubBoard(CurrentSubGridIndex);
+            int count = 0;
+            for (int i = 0; i < subBoard.Size; i++)
+            {
+                for (int j = 0; j < subBoard.Size; j++)
+                {
+                    if (subBoard.Cells[i][j].Value == number)
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        var counts = CurrentState?.NumberCounts;
+        return counts?.TryGetValue(number, out var c) == true ? c : 0;
+    }
+
+    /// <summary>
+    /// 澶勭悊閿欒銆?    /// </summary>
+    /// <param name="message">閿欒娑堟伅銆?/param>
+    /// <param name="error">寮傚父瀵硅薄銆?/param>
+    private static void HandleError(string message, Exception error)
+    {
+        System.Diagnostics.Debug.WriteLine($"{message}: {error}");
+    }
+
+    /// <summary>
+    /// 澶勭悊閿欒锛堝疄渚嬬増鏈紝鐢ㄤ簬 Handler锛夈€?    /// </summary>
+    /// <param name="message">閿欒娑堟伅銆?/param>
+    private void HandleError(string message)
+    {
+        System.Diagnostics.Debug.WriteLine(message);
+    }
+
+    /// <summary>
+    /// 鍙嶅簭鍒楀寲鑷畾涔夋鐩樸€?    /// </summary>
+    private static CustomGameBoard? DeserializeCustomBoard(string json, GameType gameType)
+    {
+        try
+        {
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var cellsData = System.Text.Json.JsonSerializer.Deserialize<List<List<int?>>>(json, options);
+            if (cellsData == null) return null;
+
+            var size = cellsData.Count;
+            var cells = new List<List<SudokuCell>>();
+            for (int r = 0; r < size; r++)
+            {
+                var row = new List<SudokuCell>();
+                for (int c = 0; c < size; c++)
+                {
+                    var val = cellsData[r].Count > c ? cellsData[r][c] : null;
+                    row.Add(new SudokuCell(r, c, val, isFixed: val.HasValue));
+                }
+                cells.Add(row);
+            }
+
+            // 鍒涘缓鏍囧噯鍖哄煙
+            var regions = new List<SudokuRegion>();
+            int blockSize = size == 9 ? 3 : 2;
+            for (int br = 0; br < blockSize; br++)
+            {
+                for (int bc = 0; bc < blockSize; bc++)
+                {
+                    var blockCells = new List<SudokuCell>();
+                    for (int r = br * blockSize; r < br * blockSize + blockSize; r++)
+                        for (int c = bc * blockSize; c < bc * blockSize + blockSize; c++)
+                            blockCells.Add(cells[r][c]);
+                    regions.Add(new SudokuRegion($"block_{br}_{bc}", RegionType.Block, $"Block({br + 1},{bc + 1})", blockCells));
+                }
+            }
+            for (int r = 0; r < size; r++)
+                regions.Add(new SudokuRegion($"row_{r}", RegionType.Row, $"Row {r + 1}", [.. cells[r]]));
+            for (int c = 0; c < size; c++)
+            {
+                var colCells = new List<SudokuCell>();
+                for (int r = 0; r < size; r++) colCells.Add(cells[r][c]);
+                regions.Add(new SudokuRegion($"col_{c}", RegionType.Column, $"Col {c + 1}", colCells));
+            }
+
+            return new CustomGameBoard(size, cells, regions, gameType);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+}
+

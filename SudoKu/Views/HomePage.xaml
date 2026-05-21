@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SudoKu.ViewModels"
+             xmlns:models="clr-namespace:SudoKu.Models"
+             xmlns:resources="clr-namespace:SudoKu.Resources"
+             xmlns:converters="clr-namespace:SudoKu.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="SudoKu.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Shell.NavBarIsVisible="False"
+             x:Name="RootPage">
+
+    <!--
+        首页，采用 PageView 两页式布局：
+        - 第0页：游戏类型选择（GridView 2x3）
+        - 第1页：难度选择（Column + Expanded）
+        顶部浮动工具栏始终显示
+    -->
+
+    <ContentPage.Resources>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+    </ContentPage.Resources>
+
+    <!-- 渐变背景 -->
+    <ContentPage.Background>
+        <LinearGradientBrush EndPoint="0,1">
+            <GradientStop Color="{AppThemeBinding Light=#E0E7FF, Dark=#0F172A}" Offset="0" />
+            <GradientStop Color="{AppThemeBinding Light=#C7D2FE, Dark=#1E1B4B}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <!-- 整体结构: 背景层 + 内容层 + 遮罩层 -->
+    <Grid>
+        <!-- ========== 页面内容 ========== -->
+        <Grid RowDefinitions="Auto, *, Auto">
+
+            <!-- 顶部浮动工具栏  -->
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="Auto, *"
+                  Padding="16,12"
+                  BackgroundColor="Transparent">
+                <!-- 返回按钮（仅在难度页面显示） -->
+                <Border Grid.Column="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        BackgroundColor="{AppThemeBinding Light=#3CFFFFFF, Dark=#0CFFFFFF}"
+                        Stroke="{AppThemeBinding Light=#50FFFFFF, Dark=#10FFFFFF}"
+                        StrokeThickness="1"
+                        IsVisible="{Binding IsDifficultyPage}"
+                        VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackToGamesCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="arrow_back.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=#C8FFFFFF}" />
+                        </Image.Behaviors>
+                    </Image>
+                </Border>
+
+                <!-- 右侧按钮区：帮助、设置、统计 -->
+                <HorizontalStackLayout Grid.Column="1"
+                                       Spacing="8"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center">
+                    <!-- 帮助按钮 -->
+                    <Border StrokeShape="RoundRectangle 20"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="{AppThemeBinding Light=#3CFFFFFF, Dark=#0CFFFFFF}"
+                            Stroke="{AppThemeBinding Light=#50FFFFFF, Dark=#10FFFFFF}"
+                            StrokeThickness="1">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding HelpCommand}" />
+                        </Border.GestureRecognizers>
+                        <Image Source="help_outline.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=#C8FFFFFF}" />
+                            </Image.Behaviors>
+                        </Image>
+                    </Border>
+                    <!-- 设置按钮 -->
+                    <Border StrokeShape="RoundRectangle 20"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="{AppThemeBinding Light=#3CFFFFFF, Dark=#0CFFFFFF}"
+                            Stroke="{AppThemeBinding Light=#50FFFFFF, Dark=#10FFFFFF}"
+                            StrokeThickness="1">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SettingsCommand}" />
+                        </Border.GestureRecognizers>
+                        <Image Source="settings.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=#C8FFFFFF}" />
+                            </Image.Behaviors>
+                        </Image>
+                    </Border>
+                    <!-- 统计按钮 -->
+                    <Border StrokeShape="RoundRectangle 20"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="{AppThemeBinding Light=#3CFFFFFF, Dark=#0CFFFFFF}"
+                            Stroke="{AppThemeBinding Light=#50FFFFFF, Dark=#10FFFFFF}"
+                            StrokeThickness="1">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding StatisticsCommand}" />
+                        </Border.GestureRecognizers>
+                        <Image Source="bar_chart.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=#C8FFFFFF}" />
+                            </Image.Behaviors>
+                        </Image>
+                    </Border>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- 内容区域 - 两页切换 -->
+            <Grid Grid.Row="1">
+
+                <!-- ========== 第0页：游戏类型选择 - 参照 Flutter: _buildGameTypePage ========== -->
+                <Grid IsVisible="{Binding IsDifficultyPage, Converter={StaticResource InverseBoolConverter}}"
+                      RowDefinitions="Auto, *"
+                      Padding="20,8">
+
+                    <!-- 页面头部  -->
+                    <VerticalStackLayout Grid.Row="0"
+                                         Spacing="8"
+                                         HorizontalOptions="Center"
+                                         Margin="0,0,0,8">
+                        <!-- 图标容器 -->
+                        <Border StrokeShape="RoundRectangle 16"
+                                BackgroundColor="{AppThemeBinding Light=#146366F1, Dark=#1E6366F1}"
+                                WidthRequest="48"
+                                HeightRequest="48"
+                                HorizontalOptions="Center">
+                            <Label Text="▣"
+                                   FontSize="26"
+                                   TextColor="#818CF8"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <!-- 应用标题 -->
+                        <Label Text="{x:Static resources:AppResources.AppTitle}"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#312E81, Dark=White}"
+                               HorizontalOptions="Center" />
+                        <!-- 副标题 -->
+                        <Label Text="{x:Static resources:AppResources.SelectGameType}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light=#996366F1, Dark=#64FFFFFF}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+
+                    <!-- 游戏类型网格 - 由 code-behind 动态构建 -->
+                    <Grid Grid.Row="1"
+                          x:Name="GameTypeGrid"
+                          HorizontalOptions="Fill"
+                          VerticalOptions="Fill" />
+                </Grid>
+
+                <!-- ========== 第1页：难度选择 - 参照 Flutter: _buildDifficultyPage ========== -->
+                <Grid IsVisible="{Binding IsDifficultyPage}"
+                      RowDefinitions="Auto, *, Auto"
+                      Padding="20,8">
+
+                    <!-- 难度页面头部 - 参照 Flutter: _buildDifficultyHeader -->
+                    <VerticalStackLayout Grid.Row="0"
+                                         Spacing="8"
+                                         HorizontalOptions="Center"
+                                         Margin="0,0,0,8">
+                        <!-- 动态图标容器 -->
+                        <Border x:Name="DifficultyIconBorder"
+                                StrokeShape="RoundRectangle 16"
+                                WidthRequest="56"
+                                HeightRequest="56"
+                                HorizontalOptions="Center">
+                            <Label x:Name="DifficultyIconLabel"
+                                   FontSize="30"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <!-- 游戏类型名称 -->
+                        <Label Text="{Binding SelectedGameName}"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                               HorizontalOptions="Center" />
+                        <!-- 副标题 -->
+                        <Label Text="{x:Static resources:AppResources.SelectDifficulty}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#64FFFFFF}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+
+                    <!-- 难度列表 - 由 code-behind 动态构建 -->
+                    <Grid Grid.Row="1"
+                          x:Name="DifficultyGrid"
+                          HorizontalOptions="Fill"
+                          VerticalOptions="Fill"
+                          MaximumWidthRequest="400" />
+
+                    <!-- 操作按钮区 - 参照 Flutter: _buildDifficultyActions -->
+                    <Grid Grid.Row="2"
+                          ColumnDefinitions="*, *"
+                          ColumnSpacing="10"
+                          MaximumWidthRequest="400"
+                          HorizontalOptions="Center"
+                          Margin="0,8,0,0">
+                        <!-- 继续游戏按钮 -->
+                        <Border Grid.Column="0"
+                                StrokeShape="RoundRectangle 10"
+                                BackgroundColor="{AppThemeBinding Light=#0F6366F1, Dark=#146366F1}"
+                                Stroke="{AppThemeBinding Light=#1E6366F1, Dark=#286366F1}"
+                                StrokeThickness="1"
+                                IsVisible="{Binding HasSavedGame}"
+                                Padding="16,10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding LoadGameCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                                <Label Text="▶" FontSize="14" TextColor="#6366F1" VerticalOptions="Center" />
+                                <Label Text="{x:Static resources:AppResources.LoadGame}"
+                                       FontSize="12" TextColor="#6366F1" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <!-- 自定义游戏按钮 -->
+                        <Border Grid.Column="1"
+                                StrokeShape="RoundRectangle 10"
+                                BackgroundColor="{AppThemeBinding Light=#0F6366F1, Dark=#146366F1}"
+                                Stroke="{AppThemeBinding Light=#1E6366F1, Dark=#286366F1}"
+                                StrokeThickness="1"
+                                IsVisible="{Binding IsCustomGameVisible}"
+                                Padding="16,10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CustomGameCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                                <Label Text="✎" FontSize="14" TextColor="#6366F1" VerticalOptions="Center" />
+                                <Label Text="{x:Static resources:AppResources.CustomGame}"
+                                       FontSize="12" TextColor="#6366F1" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <!-- ========== 底部版权信息 - 参照 Flutter: _buildFooter ========== -->
+            <HorizontalStackLayout Grid.Row="2"
+                                   HorizontalOptions="Center"
+                                   Spacing="12"
+                                   Padding="0,4,0,8">
+                <Label Text="{Binding Version, StringFormat='v{0}'}"
+                       FontSize="10"
+                       TextColor="{AppThemeBinding Light=#94A3B8, Dark=#32FFFFFF}" />
+                <Label Text="{x:Static resources:AppResources.Copyright}"
+                       FontSize="10"
+                       TextColor="{AppThemeBinding Light=#94A3B8, Dark=#32FFFFFF}" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- ========== 游戏生成中遮罩 - 参照 Flutter 加载状态 ========== -->
+        <Border IsVisible="{Binding IsGenerating}"
+                BackgroundColor="#80000000"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+            <Border HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E293B}"
+                    Padding="24"
+                    WidthRequest="220">
+                <Border.Shadow>
+                    <Shadow Brush="#60000000" Offset="0,8" Radius="24" Opacity="0.25" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+                    <ActivityIndicator IsRunning="True" Color="#3B82F6"
+                                       WidthRequest="40" HeightRequest="40"
+                                       HorizontalOptions="Center" />
+                    <Label Text="{x:Static resources:AppResources.GameGeneratingPuzzle}"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                           HorizontalOptions="Center" />
+                    <Border StrokeShape="RoundRectangle 12"
+                            HeightRequest="44"
+                            BackgroundColor="#40EF4444"
+                            Stroke="#28EF4444"
+                            StrokeThickness="1"
+                            HorizontalOptions="Fill">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CancelGenerationCommand}" />
+                        </Border.GestureRecognizers>
+                        <Label Text="{x:Static resources:AppResources.Button_Cancel}"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+        </Border>
+    </Grid>
+</ContentPage>

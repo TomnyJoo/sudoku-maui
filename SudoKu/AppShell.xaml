@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:SudoKu.Views"
+       x:Class="SudoKu.AppShell"
+       Shell.FlyoutBehavior="Disabled"
+       Shell.NavBarIsVisible="False">
+
+    <ShellContent ContentTemplate="{DataTemplate views:HomePage}" Route="Home" />
+    <ShellContent ContentTemplate="{DataTemplate views:GamePage}" Route="Game" />
+    <ShellContent ContentTemplate="{DataTemplate views:CompletionPage}" Route="Completion" />
+    <ShellContent ContentTemplate="{DataTemplate views:CustomGamePage}" Route="CustomGame" />
+    <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" Route="Settings" />
+    <ShellContent ContentTemplate="{DataTemplate views:StatisticsPage}" Route="Statistics" />
+    <ShellContent ContentTemplate="{DataTemplate views:RulesPage}" Route="Rules" />
+
+</Shell>

@@ -1,0 +1,79 @@
+[
+  {
+    "type": "standard",
+    "nameKey": "GameType_Standard",
+    "descriptionKey": "GameType_Standard_Desc",
+    "boardSize": 9,
+    "iconPath": "standard.svg",
+    "supportsDifficulty": true,
+    "supportsCustomRules": false,
+    "showCustomGame": true,
+    "supportedRegionTypes": [ "block", "row", "column" ]
+  },
+  {
+    "type": "jigsaw",
+    "nameKey": "GameType_Jigsaw",
+    "descriptionKey": "GameType_Jigsaw_Desc",
+    "boardSize": 9,
+    "iconPath": "jigsaw.svg",
+    "supportsDifficulty": true,
+    "supportsCustomRules": true,
+    "showCustomGame": true,
+    "supportedRegionTypes": [ "jigsaw", "row", "column" ]
+  },
+  {
+    "type": "diagonal",
+    "nameKey": "GameType_Diagonal",
+    "descriptionKey": "GameType_Diagonal_Desc",
+    "boardSize": 9,
+    "iconPath": "diagonal.svg",
+    "supportsDifficulty": true,
+    "supportsCustomRules": false,
+    "showCustomGame": true,
+    "supportedRegionTypes": [ "block", "row", "column", "diagonal" ]
+  },
+  {
+    "type": "killer",
+    "nameKey": "GameType_Killer",
+    "descriptionKey": "GameType_Killer_Desc",
+    "boardSize": 9,
+    "iconPath": "killer.svg",
+    "supportsDifficulty": true,
+    "supportsCustomRules": true,
+    "showCustomGame": true,
+    "supportedRegionTypes": [ "block", "cage", "row", "column" ]
+  },
+  {
+    "type": "window",
+    "nameKey": "GameType_Window",
+    "descriptionKey": "GameType_Window_Desc",
+    "boardSize": 9,
+    "iconPath": "window.svg",
+    "supportsDifficulty": true,
+    "supportsCustomRules": false,
+    "showCustomGame": true,
+    "supportedRegionTypes": [ "block", "row", "column", "window" ]
+  },
+  {
+    "type": "samurai",
+    "nameKey": "GameType_Samurai",
+    "descriptionKey": "GameType_Samurai_Desc",
+    "boardSize": 21,
+    "iconPath": "samurai.svg",
+    "supportsDifficulty": true,
+    "supportsCustomRules": false,
+    "showCustomGame": true,
+    "supportedRegionTypes": [ "block", "row", "column" ]
+  },
+  {
+    "type": "custom",
+    "nameKey": "GameType_Custom",
+    "descriptionKey": "GameType_Custom_Desc",
+    "boardSize": 9,
+    "iconPath": "standard.svg",
+    "supportsDifficulty": false,
+    "supportsCustomRules": false,
+    "showCustomGame": false,
+    "supportedRegionTypes": [ "block", "row", "column" ]
+  }
+]

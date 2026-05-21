@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SudoKu.ViewModels"
+             xmlns:resources="clr-namespace:SudoKu.Resources"
+             xmlns:converters="clr-namespace:SudoKu.Converters"
+             x:Class="SudoKu.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 渐变背景 - 参照Flutter -->
+    <ContentPage.Background>
+        <LinearGradientBrush EndPoint="0,1">
+            <GradientStop Color="{AppThemeBinding Light=#E0E7FF, Dark=#0F172A}" Offset="0" />
+            <GradientStop Color="{AppThemeBinding Light=#C7D2FE, Dark=#1E1B4B}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ContentPage.Resources>
+        <converters:IntEqualConverter x:Key="IntEqualConverter" />
+        <converters:TabBackgroundConverter x:Key="TabBackgroundConverter" />
+        <converters:TabTextColorConverter x:Key="TabTextColorConverter" />
+        <converters:SegmentBackgroundConverter x:Key="SegmentBackgroundConverter" />
+        <converters:SegmentTextColorConverter x:Key="SegmentTextColorConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- 标题栏 - 参照Flutter AppBar风格 -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="16,12" HeightRequest="56">
+            <!-- 返回按钮 -->
+            <Border Grid.Column="0"
+                    StrokeShape="RoundRectangle 20"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="&#x2190;"
+                       FontSize="20"
+                       TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <!-- 标题 -->
+            <Label Grid.Column="1"
+                   Text="{x:Static resources:AppResources.SettingsPageTitle}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </Grid>
+
+        <!-- Tab 切换器 - Material风格分段按钮 -->
+        <Border Grid.Row="1"
+                Margin="16,8"
+                Padding="4"
+                StrokeShape="RoundRectangle 12"
+                BackgroundColor="{AppThemeBinding Light=#B3FFFFFF, Dark=#14FFFFFF}"
+                Stroke="{AppThemeBinding Light=#22FFFFFF, Dark=#0DFFFFFF}"
+                StrokeThickness="1">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                <!-- 基本设置 Tab -->
+                <Border Grid.Column="0"
+                        StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{Binding SelectedTabIndex, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=0}"
+                        Padding="12,8">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SwitchTabCommand}" CommandParameter="0" />
+                    </Border.GestureRecognizers>
+                    <Label Text="{x:Static resources:AppResources.SettingsBasicSettings}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{Binding SelectedTabIndex, Converter={StaticResource TabTextColorConverter}, ConverterParameter=0}"
+                           HorizontalOptions="Center" />
+                </Border>
+                <!-- 游戏设置 Tab -->
+                <Border Grid.Column="1"
+                        StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{Binding SelectedTabIndex, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=1}"
+                        Padding="12,8">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SwitchTabCommand}" CommandParameter="1" />
+                    </Border.GestureRecognizers>
+                    <Label Text="{x:Static resources:AppResources.SettingsGameSettingsTab}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{Binding SelectedTabIndex, Converter={StaticResource TabTextColorConverter}, ConverterParameter=1}"
+                           HorizontalOptions="Center" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Tab 内容区域 -->
+        <ScrollView Grid.Row="2">
+            <Grid>
+                <!-- 基本设置内容 - 参照Flutter风格：无图标，分段按钮 -->
+                <VerticalStackLayout Padding="16"
+                                     Spacing="24"
+                                     IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntEqualConverter}, ConverterParameter=0}">
+
+                    <!-- 语言设置卡片 -->
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeThickness="0"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="{x:Static resources:AppResources.SettingsLanguage}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                            <!-- 分段按钮 - 参照Flutter SegmentedButton -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                                <Border Grid.Column="0"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="{Binding LanguageIndex, Converter={StaticResource SegmentBackgroundConverter}, ConverterParameter=0}"
+                                        Padding="12,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetLanguageByIndexCommand}" CommandParameter="0" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="English"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding LanguageIndex, Converter={StaticResource SegmentTextColorConverter}, ConverterParameter=0}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+                                <Border Grid.Column="1"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="{Binding LanguageIndex, Converter={StaticResource SegmentBackgroundConverter}, ConverterParameter=1}"
+                                        Padding="12,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetLanguageByIndexCommand}" CommandParameter="1" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="中文"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding LanguageIndex, Converter={StaticResource SegmentTextColorConverter}, ConverterParameter=1}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- 主题设置卡片 -->
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeThickness="0"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="{x:Static resources:AppResources.SettingsTheme}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                            <!-- 分段按钮 -->
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+                                <Border Grid.Column="0"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="{Binding ThemeIndex, Converter={StaticResource SegmentBackgroundConverter}, ConverterParameter=0}"
+                                        Padding="8,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetThemeByIndexCommand}" CommandParameter="0" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{x:Static resources:AppResources.SettingsThemeLight}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding ThemeIndex, Converter={StaticResource SegmentTextColorConverter}, ConverterParameter=0}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+                                <Border Grid.Column="1"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="{Binding ThemeIndex, Converter={StaticResource SegmentBackgroundConverter}, ConverterParameter=1}"
+                                        Padding="8,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetThemeByIndexCommand}" CommandParameter="1" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{x:Static resources:AppResources.SettingsThemeDark}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding ThemeIndex, Converter={StaticResource SegmentTextColorConverter}, ConverterParameter=1}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+                                <Border Grid.Column="2"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="{Binding ThemeIndex, Converter={StaticResource SegmentBackgroundConverter}, ConverterParameter=2}"
+                                        Padding="8,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetThemeByIndexCommand}" CommandParameter="2" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{x:Static resources:AppResources.SettingsThemeSystem}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding ThemeIndex, Converter={StaticResource SegmentTextColorConverter}, ConverterParameter=2}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- 音频设置卡片 - 简化版，参照Flutter -->
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeThickness="0"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="{x:Static resources:AppResources.SettingsAudio}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                            <!-- 背景音乐开关 -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{x:Static resources:AppResources.SettingsMusic}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}"
+                                       VerticalOptions="Center" />
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding MusicEnabled, Mode=TwoWay}"
+                                        OnColor="#2563EB"
+                                        ThumbColor="{AppThemeBinding Light=White, Dark=#2563EB}" />
+                            </Grid>
+
+                            <!-- 音效开关 -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{x:Static resources:AppResources.SoundEffects}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}"
+                                       VerticalOptions="Center" />
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding SoundEffectsEnabled, Mode=TwoWay}"
+                                        OnColor="#2563EB"
+                                        ThumbColor="{AppThemeBinding Light=White, Dark=#2563EB}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- 游戏设置内容 - 简化版，参照Flutter -->
+                <VerticalStackLayout Padding="16"
+                                     Spacing="24"
+                                     IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntEqualConverter}, ConverterParameter=1}">
+
+                    <!-- 游戏设置卡片 -->
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeThickness="0"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="{x:Static resources:AppResources.SettingsGameSettings}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                            <!-- 自动检查错误开关 -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{x:Static resources:AppResources.SettingsAutoCheck}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}"
+                                       VerticalOptions="Center" />
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding AutoCheckEnabled, Mode=TwoWay}"
+                                        OnColor="#2563EB"
+                                        ThumbColor="{AppThemeBinding Light=White, Dark=#2563EB}" />
+                            </Grid>
+
+                            <!-- 错误高亮开关 -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{x:Static resources:AppResources.SettingsHighlightMistakes}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}"
+                                       VerticalOptions="Center" />
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding HighlightMistakesEnabled, Mode=TwoWay}"
+                                        OnColor="#2563EB"
+                                        ThumbColor="{AppThemeBinding Light=White, Dark=#2563EB}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- 高级设置卡片 -->
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeThickness="0"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="{x:Static resources:AppResources.SettingsCandidateSettings}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                            <!-- 高级策略开关 -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{x:Static resources:AppResources.SettingsUseAdvancedStrategy}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}"
+                                       VerticalOptions="Center" />
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding UseAdvancedStrategy, Mode=TwoWay}"
+                                        OnColor="#2563EB"
+                                        ThumbColor="{AppThemeBinding Light=White, Dark=#2563EB}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,353 @@
+import 'package:sudoku/models/game_type.dart';
+
+/// 策略级别（用于难度控制）
+enum StrategyLevel {
+  basic,
+  intermediate,
+  advanced,
+  expert,
+  master,
+}
+
+/// 策略类型枚举
+enum StrategyType {
+  basic,
+  candidate,
+  nakedSingle,
+  hiddenSingle,
+  nakedPair,
+  hiddenPair,
+  nakedTriple,
+  hiddenTriple,
+  lockedCandidate,
+  xWing,
+  swordfish,
+  jellyfish,
+  xyWing,
+  xyzWing,
+  uniqueRectangle,
+  twoStringKite,
+  skyscraper,
+  emptyRectangle,
+  finnedXWing,
+  finnedSwordfish,
+  killerCageConstraint,
+  killer45Rule,
+  killerOverlapElimination,
+  killerCageBlocking,
+}
+
+/// 策略信息
+class StrategyInfo {
+
+  const StrategyInfo({
+    required this.type,
+    required this.name,
+    required this.description,
+    required this.level,
+    required this.applicableGames,
+  });
+  final StrategyType type;
+  final String name;
+  final String description;
+  final StrategyLevel level;
+  final Set<GameType> applicableGames;
+}
+
+/// 策略元数据
+const Map<StrategyType, StrategyInfo> strategyMetadata = {
+  StrategyType.basic: StrategyInfo(
+    type: StrategyType.basic,
+    name: '基本提示',
+    description: '指出可以填入数字的单元格',
+    level: StrategyLevel.basic,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.candidate: StrategyInfo(
+    type: StrategyType.candidate,
+    name: '候选数提示',
+    description: '显示单元格的候选数',
+    level: StrategyLevel.basic,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.nakedSingle: StrategyInfo(
+    type: StrategyType.nakedSingle,
+    name: '唯一候选数',
+    description: '单元格只有一个候选数',
+    level: StrategyLevel.basic,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.hiddenSingle: StrategyInfo(
+    type: StrategyType.hiddenSingle,
+    name: '隐藏唯一候选数',
+    description: '区域内某数字只出现在一个单元格',
+    level: StrategyLevel.basic,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.nakedPair: StrategyInfo(
+    type: StrategyType.nakedPair,
+    name: '裸对',
+    description: '区域内两个单元格的候选数合集为2个数字',
+    level: StrategyLevel.intermediate,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.hiddenPair: StrategyInfo(
+    type: StrategyType.hiddenPair,
+    name: '隐藏对',
+    description: '区域内两个数字只出现在两个单元格',
+    level: StrategyLevel.intermediate,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.nakedTriple: StrategyInfo(
+    type: StrategyType.nakedTriple,
+    name: '裸三',
+    description: '区域内三个单元格的候选数合集不超过3个数字',
+    level: StrategyLevel.intermediate,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.hiddenTriple: StrategyInfo(
+    type: StrategyType.hiddenTriple,
+    name: '隐藏三',
+    description: '区域内三个数字只出现在三个单元格',
+    level: StrategyLevel.intermediate,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.lockedCandidate: StrategyInfo(
+    type: StrategyType.lockedCandidate,
+    name: '锁定候选数',
+    description: '区块排除法',
+    level: StrategyLevel.intermediate,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.xWing: StrategyInfo(
+    type: StrategyType.xWing,
+    name: 'X-Wing',
+    description: '行/列中的双强链',
+    level: StrategyLevel.advanced,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.swordfish: StrategyInfo(
+    type: StrategyType.swordfish,
+    name: 'Swordfish',
+    description: '行/列中的三强链',
+    level: StrategyLevel.advanced,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.jellyfish: StrategyInfo(
+    type: StrategyType.jellyfish,
+    name: 'Jellyfish',
+    description: '行/列中的四强链',
+    level: StrategyLevel.advanced,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.xyWing: StrategyInfo(
+    type: StrategyType.xyWing,
+    name: 'XY-Wing',
+    description: 'XY链结构',
+    level: StrategyLevel.expert,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.xyzWing: StrategyInfo(
+    type: StrategyType.xyzWing,
+    name: 'XYZ-Wing',
+    description: 'XYZ链结构',
+    level: StrategyLevel.expert,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.uniqueRectangle: StrategyInfo(
+    type: StrategyType.uniqueRectangle,
+    name: '唯一矩形',
+    description: '利用唯一解性质排除候选数',
+    level: StrategyLevel.expert,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.twoStringKite: StrategyInfo(
+    type: StrategyType.twoStringKite,
+    name: '双串风筝',
+    description: '跨行列的强链结构',
+    level: StrategyLevel.master,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.skyscraper: StrategyInfo(
+    type: StrategyType.skyscraper,
+    name: '摩天大楼',
+    description: '平行强链结构',
+    level: StrategyLevel.master,
+    applicableGames: {
+      GameType.standard,
+      GameType.diagonal,
+      GameType.window,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.emptyRectangle: StrategyInfo(
+    type: StrategyType.emptyRectangle,
+    name: '空矩形',
+    description: '利用空宫格排除候选数',
+    level: StrategyLevel.master,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.finnedXWing: StrategyInfo(
+    type: StrategyType.finnedXWing,
+    name: '带鳍X-Wing',
+    description: '带额外单元格的X-Wing',
+    level: StrategyLevel.master,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.finnedSwordfish: StrategyInfo(
+    type: StrategyType.finnedSwordfish,
+    name: '带鳍Swordfish',
+    description: '带额外单元格的Swordfish',
+    level: StrategyLevel.master,
+    applicableGames: {
+      GameType.standard,
+      GameType.killer,
+      GameType.samurai,
+      GameType.jigsaw,
+    },
+  ),
+  StrategyType.killerCageConstraint: StrategyInfo(
+    type: StrategyType.killerCageConstraint,
+    name: '笼子约束',
+    description: '利用笼子总和约束排除候选数',
+    level: StrategyLevel.basic,
+    applicableGames: {GameType.killer},
+  ),
+  StrategyType.killer45Rule: StrategyInfo(
+    type: StrategyType.killer45Rule,
+    name: '45法则',
+    description: '利用行、列、宫总和为45的性质',
+    level: StrategyLevel.intermediate,
+    applicableGames: {GameType.killer},
+  ),
+  StrategyType.killerOverlapElimination: StrategyInfo(
+    type: StrategyType.killerOverlapElimination,
+    name: '交叉排除',
+    description: '利用共享单元格的笼子组排除候选数',
+    level: StrategyLevel.intermediate,
+    applicableGames: {GameType.killer},
+  ),
+  StrategyType.killerCageBlocking: StrategyInfo(
+    type: StrategyType.killerCageBlocking,
+    name: '笼子区块排除',
+    description: '利用笼子跨越区域的约束排除候选数',
+    level: StrategyLevel.intermediate,
+    applicableGames: {GameType.killer},
+  ),
+};

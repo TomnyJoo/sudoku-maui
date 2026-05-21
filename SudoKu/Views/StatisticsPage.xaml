@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SudoKu.ViewModels"
+             xmlns:resources="clr-namespace:SudoKu.Resources"
+             xmlns:converters="clr-namespace:SudoKu.Converters"
+             x:Class="SudoKu.Views.StatisticsPage"
+             x:DataType="vm:StatisticsViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <converters:GameTypeIconConverter x:Key="GameTypeIconTextConverter" />
+        <converters:GameTypeIconBackgroundConverter x:Key="GameTypeIconBackgroundConverter" />
+    </ContentPage.Resources>
+
+    <!-- 渐变背景 -->
+    <ContentPage.Background>
+        <LinearGradientBrush EndPoint="0,1">
+            <GradientStop Color="{AppThemeBinding Light=#E0E7FF, Dark=#0F172A}" Offset="0" />
+            <GradientStop Color="{AppThemeBinding Light=#C7D2FE, Dark=#1E1B4B}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <!-- 标题 -->
+            <Label Text="{Binding Title}"
+                   Style="{StaticResource PageTitleStyle}"
+                   TextColor="#6366F1"
+                   HorizontalOptions="Center"
+                   Margin="0,8,0,4" />
+
+            <!-- 总览统计卡片 -->
+            <Border Style="{StaticResource GlassCardStyle}">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="{x:Static resources:AppResources.StatsOverview}"
+                           Style="{StaticResource SectionTitleStyle}"
+                           HorizontalOptions="Center" />
+
+                    <Grid ColumnDefinitions="*,*"
+                          RowDefinitions="Auto,Auto,Auto"
+                          RowSpacing="16"
+                          ColumnSpacing="16">
+
+                        <!-- 总游戏数 -->
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0"
+                                             HorizontalOptions="Center"
+                                             Spacing="4">
+                            <Label Text="{Binding TotalGamesPlayed}"
+                                   FontSize="32"
+                                   FontAttributes="Bold"
+                                   TextColor="#6366F1"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static resources:AppResources.TotalGamesPlayed}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- 获胜数 -->
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1"
+                                             HorizontalOptions="Center"
+                                             Spacing="4">
+                            <Label Text="{Binding TotalGamesWon}"
+                                   FontSize="32"
+                                   FontAttributes="Bold"
+                                   TextColor="#10B981"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static resources:AppResources.TotalGamesWon}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- 胜率 -->
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="0"
+                                             HorizontalOptions="Center"
+                                             Spacing="4">
+                            <Label Text="{Binding WinRate, StringFormat='{0:P0}'}"
+                                   FontSize="32"
+                                   FontAttributes="Bold"
+                                   TextColor="#F59E0B"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static resources:AppResources.WinRate}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- 当前连胜 -->
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1"
+                                             HorizontalOptions="Center"
+                                             Spacing="4">
+                            <Label Text="{Binding CurrentStreak}"
+                                   FontSize="32"
+                                   FontAttributes="Bold"
+                                   TextColor="#EC4899"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static resources:AppResources.CurrentStreak}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- 最佳连胜 -->
+                        <VerticalStackLayout Grid.Row="2" Grid.Column="0"
+                                             HorizontalOptions="Center"
+                                             Spacing="4">
+                            <Label Text="{Binding BestStreak}"
+                                   FontSize="32"
+                                   FontAttributes="Bold"
+                                   TextColor="#8B5CF6"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static resources:AppResources.BestStreak}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- 总游戏时间 -->
+                        <VerticalStackLayout Grid.Row="2" Grid.Column="1"
+                                             HorizontalOptions="Center"
+                                             Spacing="4">
+                            <Label Text="{Binding TotalPlayTimeDisplay}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="#06B6D4"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static resources:AppResources.TotalPlayTime}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 操作按钮 - 使用Border替代SfButton -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Border Grid.Column="0"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="16,12"
+                        HorizontalOptions="Fill">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding RefreshCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="1,0">
+                            <GradientStop Color="#3B82F6" Offset="0" />
+                            <GradientStop Color="#60A5FA" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Label Text="{x:Static resources:AppResources.Refresh}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center" />
+                </Border>
+
+                <Border Grid.Column="1"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="16,12"
+                        HorizontalOptions="Fill">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearStatisticsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="1,0">
+                            <GradientStop Color="#EF4444" Offset="0" />
+                            <GradientStop Color="#F87171" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Label Text="{x:Static resources:AppResources.ClearStatistics}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center" />
+                </Border>
+            </Grid>
+
+            <!-- 游戏类型统计对比 -->
+            <Label Text="{x:Static resources:AppResources.StatsComparison}"
+                   Style="{StaticResource SectionTitleStyle}"
+                   Margin="0,8,0,4" />
+
+            <CollectionView ItemsSource="{Binding GameTypeStatsList}"
+                            Margin="0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:GameTypeStatsDisplay">
+                        <Border Style="{StaticResource GlassCardStyle}"
+                                Margin="0,0,0,12">
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                  RowDefinitions="Auto,Auto"
+                                  RowSpacing="8">
+                                <!-- 游戏类型图标 -->
+                                <Border Grid.Row="0" Grid.Column="0"
+                                        Grid.RowSpan="2"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="{Binding GameType, Converter={StaticResource GameTypeIconBackgroundConverter}}"
+                                        WidthRequest="48"
+                                        HeightRequest="48"
+                                        Margin="0,0,12,0">
+                                    <Label Text="{Binding GameType, Converter={StaticResource GameTypeIconTextConverter}}"
+                                           FontSize="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+
+                                <!-- 游戏类型名称 -->
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding DisplayName}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                                <!-- 胜率 -->
+                                <Label Grid.Row="0" Grid.Column="2"
+                                       Text="{Binding WinRate, StringFormat='{0:P0}'}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#6366F1"
+                                       HorizontalOptions="End" />
+
+                                <!-- 游戏统计详情 -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                                       Spacing="16">
+                                    <Label Text="{Binding GamesPlayedDisplay}"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Text="{Binding BestTimeDisplay}"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- 详细统计 -->
+            <Label Text="{x:Static resources:AppResources.StatsDetails}"
+                   Style="{StaticResource SectionTitleStyle}"
+                   Margin="0,8,0,4" />
+
+            <Label Text="{x:Static resources:AppResources.StatsDetailedDescription}"
+                   FontSize="14"
+                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                   Margin="0,0,0,8" />
+
+            <CollectionView ItemsSource="{Binding GameTypeStatsList}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:GameTypeStatsDisplay">
+                        <Border Style="{StaticResource GlassCardStyle}"
+                                Margin="0,0,0,12">
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="{Binding DisplayName}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+
+                                <BoxView HeightRequest="1"
+                                         Color="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+
+                                <Grid ColumnDefinitions="*,*"
+                                      RowDefinitions="Auto,Auto,Auto,Auto"
+                                      RowSpacing="12">
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{x:Static resources:AppResources.GamesPlayed}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                           Text="{Binding GamesPlayed}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                                           HorizontalOptions="End" />
+
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{x:Static resources:AppResources.GamesWon}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Grid.Row="1" Grid.Column="1"
+                                           Text="{Binding GamesWon}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                                           HorizontalOptions="End" />
+
+                                    <Label Grid.Row="2" Grid.Column="0"
+                                           Text="{x:Static resources:AppResources.BestTimeStat}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Grid.Row="2" Grid.Column="1"
+                                           Text="{Binding BestTimeDisplay}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#10B981"
+                                           HorizontalOptions="End" />
+
+                                    <Label Grid.Row="3" Grid.Column="0"
+                                           Text="{x:Static resources:AppResources.AvgTime}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Grid.Row="3" Grid.Column="1"
+                                           Text="{Binding AvgCompletionTimeDisplay}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#F59E0B"
+                                           HorizontalOptions="End" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

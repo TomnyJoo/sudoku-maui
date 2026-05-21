@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="App_Title" xml:space="preserve">
+    <value>Sudoku Collection</value>
+  </data>
+  <data name="Language_Chinese" xml:space="preserve">
+    <value>Chinese</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="GameType_Standard" xml:space="preserve">
+    <value>Standard Sudoku</value>
+  </data>
+  <data name="GameType_Standard_Desc" xml:space="preserve">
+    <value>Classic 9x9 Sudoku. Fill each row, column, and 3x3 box with 1-9 without repetition</value>
+  </data>
+  <data name="GameType_Jigsaw" xml:space="preserve">
+    <value>Jigsaw Sudoku</value>
+  </data>
+  <data name="GameType_Jigsaw_Desc" xml:space="preserve">
+    <value>Irregular regions instead of standard 3x3 boxes. Each jigsaw region must contain 1-9</value>
+  </data>
+  <data name="GameType_Diagonal" xml:space="preserve">
+    <value>Diagonal Sudoku</value>
+  </data>
+  <data name="GameType_Diagonal_Desc" xml:space="preserve">
+    <value>Standard Sudoku with additional diagonal constraints. Both main diagonals must also contain 1-9</value>
+  </data>
+  <data name="GameType_Killer" xml:space="preserve">
+    <value>Killer Sudoku</value>
+  </data>
+  <data name="GameType_Killer_Desc" xml:space="preserve">
+    <value>No initial digits given. Solve using sum clues for cage regions</value>
+  </data>
+  <data name="GameType_Window" xml:space="preserve">
+    <value>Window Sudoku</value>
+  </data>
+  <data name="GameType_Window_Desc" xml:space="preserve">
+    <value>Standard Sudoku with four additional window regions that must also contain 1-9</value>
+  </data>
+  <data name="GameType_Samurai" xml:space="preserve">
+    <value>Samurai Sudoku</value>
+  </data>
+  <data name="GameType_Samurai_Desc" xml:space="preserve">
+    <value>Five overlapping 9x9 Sudoku grids forming a large and challenging puzzle</value>
+  </data>
+  <data name="GameType_Custom" xml:space="preserve">
+    <value>Custom Sudoku</value>
+  </data>
+  <data name="GameType_Custom_Desc" xml:space="preserve">
+    <value>Create and edit your own Sudoku puzzles</value>
+  </data>
+  <data name="Difficulty_Beginner" xml:space="preserve">
+    <value>Beginner</value>
+  </data>
+  <data name="Difficulty_Easy" xml:space="preserve">
+    <value>Easy</value>
+  </data>
+  <data name="Difficulty_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Difficulty_Hard" xml:space="preserve">
+    <value>Hard</value>
+  </data>
+  <data name="Difficulty_Expert" xml:space="preserve">
+    <value>Expert</value>
+  </data>
+  <data name="Difficulty_Master" xml:space="preserve">
+    <value>Master</value>
+  </data>
+  <data name="Difficulty_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Button_StartNewGame" xml:space="preserve">
+    <value>New Game</value>
+  </data>
+  <data name="Button_ContinueGame" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Button_CustomGame" xml:space="preserve">
+    <value>Custom Game</value>
+  </data>
+  <data name="Button_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Button_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="Button_Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="Button_Hint" xml:space="preserve">
+    <value>Hint</value>
+  </data>
+  <data name="Button_Erase" xml:space="preserve">
+    <value>Erase</value>
+  </data>
+  <data name="Button_Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Button_Solution" xml:space="preserve">
+    <value>Solution</value>
+  </data>
+  <data name="Button_PlayAgain" xml:space="preserve">
+    <value>Play Again</value>
+  </data>
+  <data name="Button_BackToMenu" xml:space="preserve">
+    <value>Back to Menu</value>
+  </data>
+  <data name="Button_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Button_ClearStatistics" xml:space="preserve">
+    <value>Clear Statistics</value>
+  </data>
+  <data name="Button_Validate" xml:space="preserve">
+    <value>Validate</value>
+  </data>
+  <data name="Page_Home" xml:space="preserve">
+    <value>Sudoku Collection</value>
+  </data>
+  <data name="Page_Game" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Page_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Page_Statistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="Page_Rules" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="Page_Completion" xml:space="preserve">
+    <value>Completion</value>
+  </data>
+  <data name="Page_CustomGame" xml:space="preserve">
+    <value>Custom Game</value>
+  </data>
+  <data name="Game_GeneratingPuzzle" xml:space="preserve">
+    <value>Generating puzzle...</value>
+  </data>
+  <data name="Game_Congratulations" xml:space="preserve">
+    <value>Congratulations!</value>
+  </data>
+  <data name="Game_NewRecord" xml:space="preserve">
+    <value>New Record!</value>
+  </data>
+  <data name="Game_GameOver" xml:space="preserve">
+    <value>Game Over</value>
+  </data>
+  <data name="Game_Mistakes" xml:space="preserve">
+    <value>Mistakes</value>
+  </data>
+  <data name="Game_BestTime" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="Game_ElapsedTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Game_CompletionPercentage" xml:space="preserve">
+    <value>Completion</value>
+  </data>
+  <data name="Game_Paused" xml:space="preserve">
+    <value>Paused</value>
+  </data>
+  <data name="Stats_TotalGamesPlayed" xml:space="preserve">
+    <value>Total Games</value>
+  </data>
+  <data name="Stats_TotalGamesWon" xml:space="preserve">
+    <value>Total Wins</value>
+  </data>
+  <data name="Stats_WinRate" xml:space="preserve">
+    <value>Win Rate</value>
+  </data>
+  <data name="Stats_CurrentStreak" xml:space="preserve">
+    <value>Current Streak</value>
+  </data>
+  <data name="Stats_BestStreak" xml:space="preserve">
+    <value>Best Streak</value>
+  </data>
+  <data name="Stats_TotalPlayTime" xml:space="preserve">
+    <value>Total Play Time</value>
+  </data>
+  <data name="Stats_GamesPlayed" xml:space="preserve">
+    <value>Games Played</value>
+  </data>
+  <data name="Stats_GamesWon" xml:space="preserve">
+    <value>Games Won</value>
+  </data>
+  <data name="Stats_BestTime" xml:space="preserve">
+    <value>Best Time</value>
+  </data>
+  <data name="Stats_AvgTime" xml:space="preserve">
+    <value>Avg Time</value>
+  </data>
+  <data name="Stats_Overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="Stats_Comparison" xml:space="preserve">
+    <value>Comparison</value>
+  </data>
+  <data name="Stats_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Stats_DetailedDescription" xml:space="preserve">
+    <value>Detailed statistics for each game type</value>
+  </data>
+  <data name="Stats_GamesPlayedFormat" xml:space="preserve">
+    <value>Games: {0}</value>
+  </data>
+  <data name="Stats_GamesWonFormat" xml:space="preserve">
+    <value>Wins: {0}</value>
+  </data>
+  <data name="Settings_HighlightSettings" xml:space="preserve">
+    <value>Highlight Settings</value>
+  </data>
+  <data name="Settings_AdvancedSettings" xml:space="preserve">
+    <value>Advanced Settings</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_BackgroundMusic" xml:space="preserve">
+    <value>Background Music</value>
+  </data>
+  <data name="Settings_SoundEffects" xml:space="preserve">
+    <value>Sound Effects</value>
+  </data>
+  <data name="Settings_ErrorHighlight" xml:space="preserve">
+    <value>Error Highlight</value>
+  </data>
+  <data name="Settings_HighlightSameNumbers" xml:space="preserve">
+    <value>Highlight Same Numbers</value>
+  </data>
+  <data name="Settings_HighlightRelatedCells" xml:space="preserve">
+    <value>Highlight Related Cells</value>
+  </data>
+  <data name="Settings_AutoCheckErrors" xml:space="preserve">
+    <value>Auto Check Errors</value>
+  </data>
+  <data name="Settings_AutoMarkMode" xml:space="preserve">
+    <value>Auto Notes Mode</value>
+  </data>
+  <data name="Settings_ShowTimer" xml:space="preserve">
+    <value>Show Timer</value>
+  </data>
+  <data name="Settings_AdvancedStrategy" xml:space="preserve">
+    <value>Advanced Strategy Hints</value>
+  </data>
+  <data name="Settings_SaveSettings" xml:space="preserve">
+    <value>Save Settings</value>
+  </data>
+  <data name="Settings_BasicSettings" xml:space="preserve">
+    <value>Basic Settings</value>
+  </data>
+  <data name="Settings_GameSettings" xml:space="preserve">
+    <value>Game Settings</value>
+  </data>
+  <data name="Settings_SystemSettings" xml:space="preserve">
+    <value>System Settings</value>
+  </data>
+  <data name="Settings_EnableBackgroundMusic" xml:space="preserve">
+    <value>Enable Background Music</value>
+  </data>
+  <data name="Settings_EnableSoundEffects" xml:space="preserve">
+    <value>Enable Sound Effects</value>
+  </data>
+  <data name="Settings_Volume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Settings_Audio" xml:space="preserve">
+    <value>Audio Setting</value>
+  </data>
+  <data name="Settings_CandidateSettings" xml:space="preserve">
+    <value>Candidate Settings</value>
+  </data>
+  <data name="Settings_SelectTheme" xml:space="preserve">
+    <value>Select Theme</value>
+  </data>
+  <data name="Settings_SelectLanguage" xml:space="preserve">
+    <value>Select Language</value>
+  </data>
+  <data name="Completion_GameType" xml:space="preserve">
+    <value>Game Type</value>
+  </data>
+  <data name="Completion_Difficulty" xml:space="preserve">
+    <value>Difficulty</value>
+  </data>
+  <data name="Completion_TimeUsed" xml:space="preserve">
+    <value>Time Used</value>
+  </data>
+  <data name="Completion_ErrorCount" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Completion_Accuracy" xml:space="preserve">
+    <value>Accuracy</value>
+  </data>
+  <data name="Home_SelectGameType" xml:space="preserve">
+    <value>Select Game Type</value>
+  </data>
+  <data name="Home_SelectDifficulty" xml:space="preserve">
+    <value>Select Difficulty</value>
+  </data>
+  <data name="CustomGame_FilledCells" xml:space="preserve">
+    <value>Filled</value>
+  </data>
+  <data name="CustomGame_RemainingCells" xml:space="preserve">
+    <value>Remaining</value>
+  </data>
+  <data name="CustomGame_Validate" xml:space="preserve">
+    <value>Validate</value>
+  </data>
+  <data name="CustomGame_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CustomGame_StartGame" xml:space="preserve">
+    <value>Start Game</value>
+  </data>
+  <data name="CustomGame_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Rules_Standard_Title" xml:space="preserve">
+    <value>Standard Sudoku Rules</value>
+  </data>
+  <data name="Rules_Standard_Description" xml:space="preserve">
+    <value>Standard Sudoku is the most classic Sudoku variant</value>
+  </data>
+  <data name="Rules_Jigsaw_Title" xml:space="preserve">
+    <value>Jigsaw Sudoku Rules</value>
+  </data>
+  <data name="Rules_Diagonal_Title" xml:space="preserve">
+    <value>Diagonal Sudoku Rules</value>
+  </data>
+  <data name="Rules_Killer_Title" xml:space="preserve">
+    <value>Killer Sudoku Rules</value>
+  </data>
+  <data name="Rules_Window_Title" xml:space="preserve">
+    <value>Window Sudoku Rules</value>
+  </data>
+  <data name="Rules_Samurai_Title" xml:space="preserve">
+    <value>Samurai Sudoku Rules</value>
+  </data>
+  <data name="Msg_ConfirmClearStats" xml:space="preserve">
+    <value>Are you sure you want to clear all statistics? This action cannot be undone.</value>
+  </data>
+  <data name="Msg_ConfirmDeleteSave" xml:space="preserve">
+    <value>Are you sure you want to delete this save?</value>
+  </data>
+  <data name="Msg_NoSavedGame" xml:space="preserve">
+    <value>No saved game found</value>
+  </data>
+  <data name="Msg_GameSaved" xml:space="preserve">
+    <value>Game saved</value>
+  </data>
+  <data name="Msg_InvalidPuzzle" xml:space="preserve">
+    <value>Invalid puzzle, please check your input</value>
+  </data>
+  <data name="Msg_PuzzleComplete" xml:space="preserve">
+    <value>Puzzle completed</value>
+  </data>
+  <data name="Msg_HintUsed" xml:space="preserve">
+    <value>Hint used</value>
+  </data>
+  <data name="Msg_NoMoreHints" xml:space="preserve">
+    <value>No more hints available</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="App_Version" xml:space="preserve">
+    <value>Version 1.0</value>
+  </data>
+  <data name="App_Copyright" xml:space="preserve">
+    <value>© 2026 Topking Software WorkingShop</value>
+  </data>
+  <data name="Stats_TotalGames" xml:space="preserve">
+    <value>Total Games</value>
+  </data>
+  <data name="Stats_TotalWins" xml:space="preserve">
+    <value>Total Wins</value>
+  </data>
+  <data name="Stats_CurrentWinStreak" xml:space="preserve">
+    <value>Current Streak</value>
+  </data>
+  <data name="Stats_BestWinStreak" xml:space="preserve">
+    <value>Best Streak</value>
+  </data>
+  <data name="Stats_Games" xml:space="preserve">
+    <value>Games: {0}</value>
+  </data>
+  <data name="Stats_Wins" xml:space="preserve">
+    <value>Wins: {0}</value>
+  </data>
+  <data name="Stats_GameTypeStats" xml:space="preserve">
+    <value>Game Type Statistics</value>
+  </data>
+  <data name="Stats_GameTypeStatsDetail" xml:space="preserve">
+    <value>Games Played</value>
+  </data>
+  <data name="Rules_Title" xml:space="preserve">
+    <value>Game Rules</value>
+  </data>
+  <data name="Rules_Description" xml:space="preserve">
+    <value>Rules Introduction</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Common_Button_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Gen_Initializing" xml:space="preserve">
+    <value>Initializing...</value>
+  </data>
+  <data name="Gen_LoadingTemplate" xml:space="preserve">
+    <value>Loading template...</value>
+  </data>
+  <data name="Gen_CreatingRegions" xml:space="preserve">
+    <value>Creating regions...</value>
+  </data>
+  <data name="Gen_ApplyingSubstitution" xml:space="preserve">
+    <value>Applying substitution...</value>
+  </data>
+  <data name="Gen_GeneratingSolution" xml:space="preserve">
+    <value>Generating solution...</value>
+  </data>
+  <data name="Gen_DiggingPuzzle" xml:space="preserve">
+    <value>Digging puzzle...</value>
+  </data>
+  <data name="Gen_Validating" xml:space="preserve">
+    <value>Validating puzzle...</value>
+  </data>
+  <data name="Gen_Completed" xml:space="preserve">
+    <value>Generation completed</value>
+  </data>
+  <data name="Gen_Failed" xml:space="preserve">
+    <value>Generation failed</value>
+  </data>
+  <data name="Gen_FailedMessage" xml:space="preserve">
+    <value>Failed to generate {0} Sudoku {1} level game. Please try again later!</value>
+  </data>
+  <data name="Gen_UserCancelled" xml:space="preserve">
+    <value>User Cancelled</value>
+  </data>
+  <data name="GameTypeStandardDescription" xml:space="preserve">
+    <value>Classic 9x9 Sudoku with standard rules</value>
+  </data>
+  <data name="GameTypeDiagonalDescription" xml:space="preserve">
+    <value>Diagonals must also contain 1-9</value>
+  </data>
+  <data name="GameTypeWindowDescription" xml:space="preserve">
+    <value>Four extra window regions</value>
+  </data>
+  <data name="GameTypeJigsawDescription" xml:space="preserve">
+    <value>Irregular region shapes</value>
+  </data>
+  <data name="GameTypeKillerDescription" xml:space="preserve">
+    <value>Cage sum constraints</value>
+  </data>
+  <data name="GameTypeSamuraiDescription" xml:space="preserve">
+    <value>Five overlapping 9x9 grids</value>
+  </data>
+  <data name="Completion_Streak" xml:space="preserve">
+    <value>Streak Completed</value>
+  </data>
+  <data name="Completion_BackToHome" xml:space="preserve">
+    <value>Back to Home</value>
+  </data>
+  <data name="Completion_ViewStatistics" xml:space="preserve">
+    <value>View Statistics</value>
+  </data>
+  <data name="Settings_GameSettingsLabel" xml:space="preserve">
+    <value>Game Settings</value>
+  </data>
+  <data name="Difficulty_Label" xml:space="preserve">
+    <value>Difficulty</value>
+  </data>
+  <data name="Button_LoadGame" xml:space="preserve">
+    <value>Load Game</value>
+  </data>
+  <data name="Completion_PuzzleCompleted" xml:space="preserve">
+    <value>Puzzle Completed</value>
+  </data>
+  <data name="Completion_Current" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="Completion_BestScore" xml:space="preserve">
+    <value>Best Score</value>
+  </data>
+  <data name="Completion_NewRecordMessage" xml:space="preserve">
+    <value>New Record</value>
+  </data>
+  <data name="SubGrid_TopLeft" xml:space="preserve">
+    <value>TopLeft</value>
+  </data>
+  <data name="SubGrid_TopRight" xml:space="preserve">
+    <value>TopRight</value>
+  </data>
+  <data name="SubGrid_BottomLeft" xml:space="preserve">
+    <value>BottomLeft</value>
+  </data>
+  <data name="SubGrid_BottomRight" xml:space="preserve">
+    <value>BottomRight</value>
+  </data>
+  <data name="SubGrid_Center" xml:space="preserve">
+    <value>Center</value>
+  </data>
+</root>

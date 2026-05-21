@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 统一游戏屏幕页面 - 参照Flutter game_page.dart实现 -->
+<!-- 通过构造函数参数接收游戏类型配置，支持所有6种游戏类型 -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SudoKu.ViewModels"
+             xmlns:controls="clr-namespace:SudoKu.Controls"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="SudoKu.Views.GamePage"
+             x:DataType="vm:GameViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 渐变背景 - Flutter: DecoratedBox with LinearGradient -->
+    <ContentPage.Background>
+        <LinearGradientBrush EndPoint="0,1">
+            <GradientStop Color="{AppThemeBinding Light=#E0E7FF, Dark=#0F172A}" Offset="0" />
+            <GradientStop Color="{AppThemeBinding Light=#C7D2FE, Dark=#1E1B4B}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto, Auto, *">
+        <!-- 自定义标题栏 - Flutter: AppBar / _buildTopToolbar -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *, Auto"
+              Padding="8,8"
+              BackgroundColor="Transparent"
+              HeightRequest="48">
+            <!-- 返回按钮 - Flutter: IconButton with Icons.arrow_back -->
+            <Border Grid.Column="0"
+                    StrokeShape="RoundRectangle 20"
+                    WidthRequest="36"
+                    HeightRequest="36"
+                    BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}" />
+                </Border.GestureRecognizers>
+                <Image Source="arrow_back.png"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                    </Image.Behaviors>
+                </Image>
+            </Border>
+
+            <!-- 标题 - Flutter: _buildTitle -->
+            <Label Grid.Column="1"
+                   Text="{Binding Title}"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   LineBreakMode="TailTruncation"
+                   MaxLines="1" />
+
+            <!-- 右侧按钮组 - Flutter: _buildTitleActions -->
+            <HorizontalStackLayout Grid.Column="2" Spacing="4" VerticalOptions="Center">
+
+                <!-- ========== 对角线数独切换按钮 ========== -->
+                <!-- Flutter: _isDiagonalGame ? IconButton : null -->
+                <!-- Flutter: _showDiagonalLines ? Icons.show_chart : Icons.show_chart_outlined -->
+                <Border IsVisible="{Binding IsDiagonalGame}"
+                        StrokeShape="RoundRectangle 18"
+                        WidthRequest="36" HeightRequest="36"
+                        BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleDiagonalLinesCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image WidthRequest="18" HeightRequest="18"
+                           HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image.Triggers>
+                            <DataTrigger TargetType="Image"
+                                         Binding="{Binding ShowDiagonalLines}"
+                                         Value="True">
+                                <Setter Property="Source" Value="show_chart.png" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Image"
+                                         Binding="{Binding ShowDiagonalLines}"
+                                         Value="False">
+                                <Setter Property="Source" Value="show_chart_outlined.png" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                        </Image.Behaviors>
+                    </Image>
+                </Border>
+
+                <!-- ========== 锯齿数独区域编号切换按钮 ========== -->
+                <!-- Flutter: _isJigsawGame ? IconButton : null -->
+                <!-- Flutter: _showRegionNumbers ? Icons.grid_on : Icons.grid_off -->
+                <Border IsVisible="{Binding IsJigsawGame}"
+                        StrokeShape="RoundRectangle 18"
+                        WidthRequest="36" HeightRequest="36"
+                        BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleRegionNumbersCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image WidthRequest="18" HeightRequest="18"
+                           HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image.Triggers>
+                            <DataTrigger TargetType="Image"
+                                         Binding="{Binding ShowRegionNumbers}"
+                                         Value="True">
+                                <Setter Property="Source" Value="grid_on.png" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Image"
+                                         Binding="{Binding ShowRegionNumbers}"
+                                         Value="False">
+                                <Setter Property="Source" Value="grid_off.png" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                        </Image.Behaviors>
+                    </Image>
+                </Border>
+
+                <!-- ========== 杀手数独笼子切换按钮 ========== -->
+                <!-- Flutter: _isKillerGame ? IconButton : null -->
+                <!-- Flutter: _showCages ? Icons.view_module : Icons.view_module_outlined -->
+                <Border IsVisible="{Binding IsKillerGame}"
+                        StrokeShape="RoundRectangle 18"
+                        WidthRequest="36" HeightRequest="36"
+                        BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleCagesCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image WidthRequest="18" HeightRequest="18"
+                           HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image.Triggers>
+                            <DataTrigger TargetType="Image"
+                                         Binding="{Binding ShowCages}"
+                                         Value="True">
+                                <Setter Property="Source" Value="view_module.png" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Image"
+                                         Binding="{Binding ShowCages}"
+                                         Value="False">
+                                <Setter Property="Source" Value="view_module_outlined.png" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                        </Image.Behaviors>
+                    </Image>
+                </Border>
+
+                <!-- ========== 武士数独导航按钮 ========== -->
+                <!-- Flutter: _buildSamuraiTitleActions -->
+                <!-- 包含：左切换、子网格标签、右切换、总览切换 -->
+                <Border IsVisible="{Binding IsSamuraiGame}"
+                        BackgroundColor="{AppThemeBinding Light=#3DFFFFFF, Dark=#33FFFFFF}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="4,2">
+                    <HorizontalStackLayout Spacing="2" VerticalOptions="Center">
+                        <!-- 左切换按钮 - Flutter: chevron_left -->
+                        <Border StrokeShape="RoundRectangle 8" Padding="6">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SwitchSubGridPrevCommand}" />
+                            </Border.GestureRecognizers>
+                            <Image Source="chevron_left.png" WidthRequest="18" HeightRequest="18">
+                                <Image.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                                </Image.Behaviors>
+                            </Image>
+                        </Border>
+
+                        <!-- 子网格标签 - Flutter: subGridNames[currentIndex] -->
+                        <Label Text="{Binding SubGridLabel}"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#3730A3, Dark=White}"
+                               VerticalOptions="Center"
+                               Margin="4,0" />
+
+                        <!-- 右切换按钮 - Flutter: chevron_right -->
+                        <Border StrokeShape="RoundRectangle 8" Padding="6">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SwitchSubGridNextCommand}" />
+                            </Border.GestureRecognizers>
+                            <Image Source="chevron_right.png" WidthRequest="18" HeightRequest="18">
+                                <Image.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                                </Image.Behaviors>
+                            </Image>
+                        </Border>
+
+                        <!-- 总览切换按钮 - Flutter: isOverviewMode ? Icons.zoom_in : Icons.zoom_out_map -->
+                        <Border StrokeShape="RoundRectangle 8" Padding="6">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleOverviewCommand}" />
+                            </Border.GestureRecognizers>
+                            <Image WidthRequest="18" HeightRequest="18">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image"
+                                                 Binding="{Binding IsOverviewMode}"
+                                                 Value="True">
+                                        <Setter Property="Source" Value="zoom_in.png" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Image"
+                                                 Binding="{Binding IsOverviewMode}"
+                                                 Value="False">
+                                        <Setter Property="Source" Value="zoom_out_map.png" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                                <Image.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                                </Image.Behaviors>
+                            </Image>
+                        </Border>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- 帮助按钮 - Flutter: Icons.help_outline -->
+                <Border StrokeShape="RoundRectangle 18"
+                        WidthRequest="36" HeightRequest="36"
+                        BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding HelpCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="help_outline.png" WidthRequest="18" HeightRequest="18"
+                           HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                        </Image.Behaviors>
+                    </Image>
+                </Border>
+
+                <!-- 设置按钮 - Flutter: Icons.settings -->
+                <Border StrokeShape="RoundRectangle 18"
+                        WidthRequest="36" HeightRequest="36"
+                        BackgroundColor="{AppThemeBinding Light=#40FFFFFF, Dark=#20FFFFFF}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SettingsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="settings.png" WidthRequest="18" HeightRequest="18"
+                           HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light=#3730A3, Dark=White}" />
+                        </Image.Behaviors>
+                    </Image>
+                </Border>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- 状态栏 - Flutter: _buildStatsBar -->
+        <!-- Flutter: Container with gradient background, FittedBox + Row of stat items -->
+        <Border x:Name="StatsCard"
+                Grid.Row="1"
+                Margin="12,4,12,8"
+                Padding="12,8"
+                IsVisible="{Binding IsStatusBarVisible}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="0">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="1,1">
+                    <GradientStop Color="{AppThemeBinding Light=#336366F1, Dark=#196366F1}" Offset="0" />
+                    <GradientStop Color="{AppThemeBinding Light=#1A6366F1, Dark=#0D6366F1}" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <!-- Flutter: FittedBox + Row of stat items -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="16">
+                <!-- 计时器 - Flutter: Icons.timer -->
+                <HorizontalStackLayout Spacing="4">
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#333B82F6"
+                            WidthRequest="24" HeightRequest="24">
+                        <Label Text="&#x23F1;" FontSize="11"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="{Binding ElapsedTimeDisplay}" FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <!-- 错误数 - Flutter: Icons.warning_amber -->
+                <HorizontalStackLayout Spacing="4">
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#33EF4444"
+                            WidthRequest="24" HeightRequest="24">
+                        <Label Text="&#x26A0;" FontSize="11"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="{Binding MistakesCount}" FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <!-- 难度 - Flutter: Icons.star_half -->
+                <HorizontalStackLayout Spacing="4">
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#33F59E0B"
+                            WidthRequest="24" HeightRequest="24">
+                        <Label Text="&#x2605;" FontSize="11"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="{Binding LocalizedDifficulty}" FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <!-- 最佳时间 - Flutter: Icons.emoji_events -->
+                <HorizontalStackLayout Spacing="4">
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#33FBBF24"
+                            WidthRequest="24" HeightRequest="24">
+                        <Label Text="&#x1F3C6;" FontSize="11"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="{Binding BestTimeDisplay}" FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- 动态布局区域 - Flutter: Stack + Positioned -->
+        <!-- Flutter: _buildGameLayout -> _buildHorizontalGameArea / _buildVerticalGameArea -->
+        <AbsoluteLayout x:Name="DynamicArea" Grid.Row="2" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <Grid x:Name="BoardContainer" IsVisible="{Binding IsStatusBarVisible}" />
+            <Grid x:Name="KeyboardContainer" IsVisible="{Binding IsStatusBarVisible}" />
+        </AbsoluteLayout>
+
+        <!-- 加载遮罩 - Flutter: _buildLoadingIndicator -->
+        <!-- Flutter: AnimatedBuilder with CircularProgressIndicator -->
+        <Border Grid.RowSpan="3"
+                IsVisible="{Binding IsGenerating}"
+                BackgroundColor="#80000000"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+            <Border HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeShape="RoundRectangle 16"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E293B}"
+                    Padding="24"
+                    WidthRequest="220">
+                <VerticalStackLayout Spacing="16" HorizontalOptions="Center">
+                    <!-- Flutter: CircularProgressIndicator -->
+                    <ActivityIndicator IsRunning="True" Color="#3B82F6"
+                                       WidthRequest="40" HeightRequest="40" />
+
+                    <!-- Flutter: LocalizationUtils.app(context).generatingGame -->
+                    <Label Text="{Binding CurrentGenerationStageText}"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}"
+                           HorizontalOptions="Center" />
+
+                    <!-- Flutter: ElevatedButton with cancel -->
+                    <Border StrokeShape="RoundRectangle 20"
+                            HeightRequest="44"
+                            BackgroundColor="#40EF4444"
+                            HorizontalOptions="Fill">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CancelGenerationCommand}" />
+                        </Border.GestureRecognizers>
+                        <Label Text="取消"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+        </Border>
+    </Grid>
+</ContentPage>

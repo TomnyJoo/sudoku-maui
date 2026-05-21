@@ -1,0 +1,662 @@
+{
+  "@@locale": "zh",
+  "@activeGameTypes": {
+    "description": "activeGameTypes"
+  },
+  "@appName": {
+    "description": "appName"
+  },
+  "@autoMark": {
+    "description": "autoMark"
+  },
+  "@averageMistakes": {
+    "description": "averageMistakes"
+  },
+  "@averageTime": {
+    "description": "averageTime"
+  },
+  "@backToMenu": {
+    "description": "backToMenu"
+  },
+  "@bestScore": {
+    "description": "bestScore"
+  },
+  "@bestTime": {
+    "description": "bestTime"
+  },
+  "@cancel": {
+    "description": "cancel"
+  },
+  "@clear": {
+    "description": "clear"
+  },
+  "@clearAllStatsConfirm": {
+    "description": "clearAllStatsConfirm"
+  },
+  "@clearBoard": {
+    "description": "clearBoard"
+  },
+  "@clearBoardConfirm": {
+    "description": "clearBoardConfirm"
+  },
+  "@clearStatistics": {
+    "description": "clearStatistics"
+  },
+  "@completedGames": {
+    "description": "completedGames"
+  },
+  "@completionRate": {
+    "description": "completionRate"
+  },
+  "@confirm": {
+    "description": "confirm"
+  },
+  "@congratulations": {
+    "description": "congratulations"
+  },
+  "@consecutiveDays": {
+    "description": "consecutiveDays"
+  },
+  "@current": {
+    "description": "current"
+  },
+  "@customGame": {
+    "description": "customGame"
+  },
+  "@customGameError": {
+    "description": "customGameError"
+  },
+  "@customGameErrorInvalid": {
+    "description": "customGameErrorInvalid"
+  },
+  "@customGameErrorMultipleSolutions": {
+    "description": "customGameErrorMultipleSolutions"
+  },
+  "@customGameErrorTooFew": {
+    "description": "customGameErrorTooFew"
+  },
+  "@customGameInstruction1": {
+    "description": "customGameInstruction1"
+  },
+  "@customGameInstruction2": {
+    "description": "customGameInstruction2"
+  },
+  "@customSudoku": {
+    "description": "customSudoku"
+  },
+  "@difficulty": {
+    "description": "difficulty"
+  },
+  "@difficultyBeginner": {
+    "description": "difficultyBeginner"
+  },
+  "@difficultyCustom": {
+    "description": "difficultyCustom"
+  },
+  "@difficultyEasy": {
+    "description": "difficultyEasy"
+  },
+  "@difficultyExpert": {
+    "description": "difficultyExpert"
+  },
+  "@difficultyHard": {
+    "description": "difficultyHard"
+  },
+  "@difficultyMaster": {
+    "description": "difficultyMaster"
+  },
+  "@difficultyMedium": {
+    "description": "difficultyMedium"
+  },
+  "@erase": {
+    "description": "erase"
+  },
+  "@error": {
+    "description": "error"
+  },
+  "@exportStatistics": {
+    "description": "exportStatistics"
+  },
+  "@gameComparison": {
+    "description": "gameComparison"
+  },
+  "@gameRules": {
+    "description": "gameRules"
+  },
+  "@gameRulesTitle": {
+    "description": "gameRulesTitle"
+  },
+  "@gameRulesDetails": {
+    "description": "gameRulesDetails"
+  },
+  "@gameRulesSection": {
+    "description": "gameRulesSection"
+  },
+  "@validationRules": {
+    "description": "validationRules"
+  },
+  "@generatingGame": {
+    "description": "generatingGame"
+  },
+  "@generationFailedError": {
+    "description": "generationFailedError",
+    "placeholders": {
+      "error": {
+        "example": "error"
+      }
+    }
+  },
+  "@generationFailedMessage": {
+    "description": "generationFailedMessage"
+  },
+  "@generationFailedTitle": {
+    "description": "generationFailedTitle"
+  },
+  "@hint": {
+    "description": "hint"
+  },
+  "@homeCopyright": {
+    "description": "homeCopyright"
+  },
+  "@homeVersion": {
+    "description": "homeVersion",
+    "placeholders": {
+      "version": {
+        "example": "version"
+      }
+    }
+  },
+  "@incompleteGames": {
+    "description": "incompleteGames"
+  },
+  "@individualGameStats": {
+    "description": "individualGameStats"
+  },
+  "@loadGame": {
+    "description": "loadGame"
+  },
+  "@loading": {
+    "description": "loading"
+  },
+  "@longestStreak": {
+    "description": "longestStreak"
+  },
+  "@mark": {
+    "description": "mark"
+  },
+  "@mistakes": {
+    "description": "mistakes"
+  },
+  "@newGame": {
+    "description": "newGame"
+  },
+  "@newGameConfirm": {
+    "description": "newGameConfirm"
+  },
+  "@newGameConfirmContent": {
+    "description": "newGameConfirmContent"
+  },
+  "@newRecord": {
+    "description": "newRecord"
+  },
+  "@newRecordMessage": {
+    "description": "newRecordMessage"
+  },
+  "@noStatistics": {
+    "description": "noStatistics"
+  },
+  "@ok": {
+    "description": "ok"
+  },
+  "@okButton": {
+    "description": "okButton"
+  },
+  "@operationFailed": {
+    "description": "operationFailed"
+  },
+  "@operationSuccess": {
+    "description": "operationSuccess"
+  },
+  "@overview": {
+    "description": "overview"
+  },
+  "@processing": {
+    "description": "processing"
+  },
+  "@puzzleCompleted": {
+    "description": "puzzleCompleted"
+  },
+  "@redo": {
+    "description": "redo"
+  },
+  "@reset": {
+    "description": "reset"
+  },
+  "@selectDifficulty": {
+    "description": "selectDifficulty"
+  },
+  "@selectSudokuType": {
+    "description": "selectSudokuType"
+  },
+  "@selectSudokuTypeHint": {
+    "description": "selectSudokuTypeHint"
+  },
+  "@settingsAudio": {
+    "description": "settingsAudio"
+  },
+  "@settingsAutoCheck": {
+    "description": "settingsAutoCheck"
+  },
+  "@settingsBasicSettings": {
+    "description": "settingsBasicSettings"
+  },
+  "@settingsCandidateSettings": {
+    "description": "settingsCandidateSettings"
+  },
+  "@settingsGameSettings": {
+    "description": "settingsGameSettings"
+  },
+  "@settingsGameSettingsTab": {
+    "description": "settingsGameSettingsTab"
+  },
+  "@settingsHighlightMistakes": {
+    "description": "settingsHighlightMistakes"
+  },
+  "@settingsLanguage": {
+    "description": "settingsLanguage"
+  },
+  "@settingsMusic": {
+    "description": "settingsMusic"
+  },
+  "@settingsTheme": {
+    "description": "settingsTheme"
+  },
+  "@settingsThemeDark": {
+    "description": "settingsThemeDark"
+  },
+  "@settingsThemeLight": {
+    "description": "settingsThemeLight"
+  },
+  "@settingsThemeSystem": {
+    "description": "settingsThemeSystem"
+  },
+  "@settingsTitle": {
+    "description": "settingsTitle"
+  },
+  "@settingsUseAdvancedStrategy": {
+    "description": "settingsUseAdvancedStrategy"
+  },
+  "@solution": {
+    "description": "solution"
+  },
+  "@soundEffects": {
+    "description": "soundEffects"
+  },
+  "@startNewGame": {
+    "description": "startNewGame"
+  },
+  "@statisticsExported": {
+    "description": "statisticsExported"
+  },
+  "@statisticsTitle": {
+    "description": "statisticsTitle"
+  },
+  "@statsCleared": {
+    "description": "statsCleared"
+  },
+  "@summary": {
+    "description": "summary"
+  },
+  "@time": {
+    "description": "time"
+  },
+  "@totalGames": {
+    "description": "totalGames"
+  },
+  "@undo": {
+    "description": "undo"
+  },
+  "@gameCount": {
+    "description": "gameCount",
+    "placeholders": {
+      "count": {
+        "example": "10"
+      }
+    }
+  },
+  "@difficultyStats": {
+    "description": "difficultyStats"
+  },
+  "@recommendedDifficulty": {
+    "description": "recommendedDifficulty"
+  },
+  "@timeDistribution": {
+    "description": "timeDistribution"
+  },
+  "@commonErrors": {
+    "description": "commonErrors"
+  },
+  "@clearStatisticsConfirm": {
+    "description": "clearStatisticsConfirm"
+  },
+  "@noIncompleteGames": {
+    "description": "noIncompleteGames"
+  },
+  "@startTime": {
+    "description": "startTime"
+  },
+  "@timeRange0to5": {
+    "description": "timeRange0to5"
+  },
+  "@timeRange5to10": {
+    "description": "timeRange5to10"
+  },
+  "@timeRange10to15": {
+    "description": "timeRange10to15"
+  },
+  "@timeRange15to20": {
+    "description": "timeRange15to20"
+  },
+  "@timeRange20to30": {
+    "description": "timeRange20to30"
+  },
+  "@timeRange30Plus": {
+    "description": "timeRange30Plus"
+  },
+  "@noHintAvailable": {
+    "description": "noHintAvailable"
+  },
+  "@close": {
+    "description": "close"
+  },
+  "@appInitFailed": {
+    "description": "appInitFailed"
+  },
+  "@retry": {
+    "description": "retry"
+  },
+  "@hideDiagonalLines": {
+    "description": "hideDiagonalLines"
+  },
+  "@showDiagonalLines": {
+    "description": "showDiagonalLines"
+  },
+  "@hideRegionNumbers": {
+    "description": "hideRegionNumbers"
+  },
+  "@showRegionNumbers": {
+    "description": "showRegionNumbers"
+  },
+  "@tapSubGridToEdit": {
+    "description": "tapSubGridToEdit"
+  },
+  "@subGridTopLeft": {
+    "description": "subGridTopLeft"
+  },
+  "@subGridTopRight": {
+    "description": "subGridTopRight"
+  },
+  "@subGridBottomLeft": {
+    "description": "subGridBottomLeft"
+  },
+  "@subGridBottomRight": {
+    "description": "subGridBottomRight"
+  },
+  "@subGridCenter": {
+    "description": "subGridCenter"
+  },
+  "@progressInitializing": {
+    "description": "progressInitializing"
+  },
+  "@progressLoadingTemplate": {
+    "description": "progressLoadingTemplate"
+  },
+  "@progressCreatingRegions": {
+    "description": "progressCreatingRegions"
+  },
+  "@progressApplyingSubstitution": {
+    "description": "progressApplyingSubstitution"
+  },
+  "@progressGeneratingSolution": {
+    "description": "progressGeneratingSolution"
+  },
+  "@progressDiggingPuzzle": {
+    "description": "progressDiggingPuzzle"
+  },
+  "@progressValidating": {
+    "description": "progressValidating"
+  },
+  "@progressCompleted": {
+    "description": "progressCompleted"
+  },
+  "@difficultyDescBeginner": {
+    "description": "difficultyDescBeginner"
+  },
+  "@difficultyDescEasy": {
+    "description": "difficultyDescEasy"
+  },
+  "@difficultyDescMedium": {
+    "description": "difficultyDescMedium"
+  },
+  "@difficultyDescHard": {
+    "description": "difficultyDescHard"
+  },
+  "@difficultyDescExpert": {
+    "description": "difficultyDescExpert"
+  },
+  "@difficultyDescMaster": {
+    "description": "difficultyDescMaster"
+  },
+  "@difficultyDescCustom": {
+    "description": "difficultyDescCustom"
+  },
+  "@failedToLoadStats": {
+    "description": "failedToLoadStats"
+  },
+  "@failedToAddGameRecord": {
+    "description": "failedToAddGameRecord"
+  },
+  "@failedToClearStats": {
+    "description": "failedToClearStats"
+  },
+  "@failedToExportStats": {
+    "description": "failedToExportStats"
+  },
+  "@failedToImportStats": {
+    "description": "failedToImportStats"
+  },
+  "@notEnoughDataForTrend": {
+    "description": "notEnoughDataForTrend"
+  },
+  "@trendImprovement": {
+    "description": "trendImprovement"
+  },
+  "@trendDecline": {
+    "description": "trendDecline"
+  },
+  "@cageDifficultyEasy": {
+    "description": "cageDifficultyEasy"
+  },
+  "@cageDifficultyMedium": {
+    "description": "cageDifficultyMedium"
+  },
+  "@cageDifficultyHard": {
+    "description": "cageDifficultyHard"
+  },
+  "@cageDifficultyExpert": {
+    "description": "cageDifficultyExpert"
+  },
+  "@cageDifficultyMaster": {
+    "description": "cageDifficultyMaster"
+  },
+  "@recentGames": {
+    "description": "recentGames"
+  },
+  "@noGamesPlayed": {
+    "description": "noGamesPlayed"
+  },
+  "@playedMore": {
+    "description": "playedMore"
+  },
+  "activeGameTypes": "活跃游戏类型",
+  "appName": "数独",
+  "autoMark": "自动标记",
+  "averageMistakes": "平均错误数",
+  "averageTime": "平均时间",
+  "backToMenu": "返回",
+  "bestScore": "最佳分数",
+  "bestTime": "最佳时间",
+  "cancel": "取消",
+  "clear": "清空",
+  "clearAllStatsConfirm": "确定要清空所有统计数据吗？",
+  "clearBoard": "清空棋盘",
+  "clearBoardConfirm": "确定要清空棋盘吗？",
+  "clearStatistics": "清空统计",
+  "completedGames": "已完成游戏",
+  "completionRate": "完成率",
+  "confirm": "确认",
+  "congratulations": "恭喜！",
+  "consecutiveDays": "连续天数",
+  "current": "当前",
+  "customGame": "自定义游戏",
+  "customGameError": "创建自定义游戏时出错",
+  "customGameErrorInvalid": "无效的数独，请检查你的输入。",
+  "customGameErrorMultipleSolutions": "这个数独有多个解决方案。",
+  "customGameErrorTooFew": "输入的数字太少，请添加更多。",
+  "customGameInstruction1": "在网格中输入 1-9 的数字。",
+  "customGameInstruction2": "留下空单元格让 puzzle 解决。",
+  "customSudoku": "自定义数独",
+  "difficulty": "难度",
+  "difficultyBeginner": "入门",
+  "difficultyCustom": "自定义",
+  "difficultyEasy": "简单",
+  "difficultyExpert": "专家",
+  "difficultyHard": "困难",
+  "difficultyMaster": "大师",
+  "difficultyMedium": "中等",
+  "erase": "擦除",
+  "error": "错误",
+  "exportStatistics": "导出统计",
+  "gameComparison": "游戏比较",
+  "gameRules": "游戏规则",
+  "generatingGame": "正在生成游戏，请稍候...",
+  "generationFailedError": "错误：{error}",
+  "generationFailedMessage": "生成游戏失败，请重试。",
+  "generationFailedTitle": "生成失败",
+  "hint": "提示",
+  "homeCopyright": "© 2026 天王软件工作室",
+  "homeVersion": "版本 {version}",
+  "incompleteGames": "未完成游戏",
+  "individualGameStats": "个人游戏统计",
+  "loadGame": "加载游戏",
+  "loading": "加载中...",
+  "longestStreak": "最长连续记录",
+  "mark": "标记",
+  "mistakes": "错误",
+  "newGame": "新游戏",
+  "newGameConfirm": "开始新游戏？",
+  "newGameConfirmContent": "确定要开始新游戏吗？当前进度将丢失。",
+  "newRecord": "新记录！",
+  "newRecordMessage": "你创造了新记录！",
+  "noStatistics": "暂无统计数据",
+  "ok": "确定",
+  "okButton": "确定",
+  "operationFailed": "操作失败",
+  "operationSuccess": "操作成功",
+  "overview": "概览",
+  "processing": "处理中...",
+  "puzzleCompleted": "游戏完成",
+  "redo": "重做",
+  "reset": "重置",
+  "selectDifficulty": "选择难度",
+  "selectSudokuType": "选择数独类型",
+  "selectSudokuTypeHint": "请选择数独类型",
+  "settingsAudio": "音频",
+  "settingsAutoCheck": "自动检查",
+  "settingsBasicSettings": "基本设置",
+  "settingsCandidateSettings": "候选数设置",
+  "settingsGameSettings": "游戏设置",
+  "settingsGameSettingsTab": "游戏设置",
+  "settingsHighlightMistakes": "高亮错误",
+  "settingsLanguage": "语言",
+  "settingsMusic": "音乐",
+  "settingsTheme": "主题",
+  "settingsThemeDark": "深色",
+  "settingsThemeLight": "浅色",
+  "settingsThemeSystem": "系统",
+  "settingsTitle": "设置",
+  "settingsUseAdvancedStrategy": "使用高级策略",
+  "solution": "解决方案",
+  "soundEffects": "音效",
+  "startNewGame": "新游戏",
+  "statisticsExported": "统计数据已成功导出",
+  "statisticsTitle": "统计",
+  "statsCleared": "统计数据已成功清空",
+  "summary": "总结",
+  "time": "时间",
+  "totalGames": "总游戏数",
+  "undo": "撤销",
+  "difficultyStats": "难度统计",
+  "recommendedDifficulty": "推荐难度",
+  "timeDistribution": "时间分布",
+  "gameCount": "{count} 局",
+  "commonErrors": "常见错误",
+  "clearStatisticsConfirm": "确定要清除此游戏类型的所有统计数据吗？",
+  "noIncompleteGames": "没有未完成的游戏",
+  "startTime": "开始时间:",
+  "timeRange0to5": "0-5分钟",
+  "timeRange5to10": "5-10分钟",
+  "timeRange10to15": "10-15分钟",
+  "timeRange15to20": "15-20分钟",
+  "timeRange20to30": "20-30分钟",
+  "timeRange30Plus": "30分钟以上",
+  "gameRulesTitle": "规则",
+  "gameRulesDetails": "规则详情",
+  "gameRulesSection": "游戏规则",
+  "validationRules": "验证规则",
+  "noHintAvailable": "暂无可用的提示",
+  "close": "关闭",
+  "appInitFailed": "应用初始化失败",
+  "retry": "重试",
+  "hideDiagonalLines": "隐藏对角线",
+  "showDiagonalLines": "显示对角线",
+  "hideRegionNumbers": "隐藏区域编号",
+  "showRegionNumbers": "显示区域编号",
+  "tapSubGridToEdit": "点击子网格进入编辑",
+  "subGridTopLeft": "左上",
+  "subGridTopRight": "右上",
+  "subGridBottomLeft": "左下",
+  "subGridBottomRight": "右下",
+  "subGridCenter": "中心",
+  "progressInitializing": "正在初始化",
+  "progressLoadingTemplate": "正在加载模板",
+  "progressCreatingRegions": "正在创建区域",
+  "progressApplyingSubstitution": "正在应用数字替换",
+  "progressGeneratingSolution": "正在生成终盘",
+  "progressDiggingPuzzle": "正在生成棋盘",
+  "progressValidating": "正在验证棋盘",
+  "progressCompleted": "生成完成",
+  "difficultyDescBeginner": "适合初学者，填入数字较少",
+  "difficultyDescEasy": "简单难度，有基本逻辑就能解决",
+  "difficultyDescMedium": "中等难度，需要一些技巧",
+  "difficultyDescHard": "困难难度，需要高级技巧",
+  "difficultyDescExpert": "专家难度，挑战你的极限",
+  "difficultyDescMaster": "大师难度，只有真正的数独高手才能完成",
+  "difficultyDescCustom": "自定义难度",
+  "failedToLoadStats": "加载统计数据失败",
+  "failedToAddGameRecord": "添加游戏记录失败",
+  "failedToClearStats": "清除统计数据失败",
+  "failedToExportStats": "导出统计数据失败",
+  "failedToImportStats": "导入统计数据失败",
+  "notEnoughDataForTrend": "没有足够的数据进行趋势分析",
+  "trendImprovement": "进步",
+  "trendDecline": "退步",
+  "cageDifficultyEasy": "简单",
+  "cageDifficultyMedium": "中等",
+  "cageDifficultyHard": "困难",
+  "cageDifficultyExpert": "专家",
+  "cageDifficultyMaster": "大师",
+  "recentGames": "最近游戏",
+  "noGamesPlayed": "还没有玩过游戏",
+  "playedMore": "玩更多游戏来查看你的统计数据"
+}

@@ -1,0 +1,79 @@
+[
+  {
+    "level": "beginner",
+    "nameKey": "Difficulty_Beginner",
+    "difficultyScore": 0.1,
+    "maxStrategyLevel": 0,
+    "minExpectedTimeSeconds": 60,
+    "maxExpectedTimeSeconds": 300,
+    "standardMinFilled": 45,
+    "standardMaxFilled": 50,
+    "colorKey": "DifficultyBeginnerColor"
+  },
+  {
+    "level": "easy",
+    "nameKey": "Difficulty_Easy",
+    "difficultyScore": 0.25,
+    "maxStrategyLevel": 1,
+    "minExpectedTimeSeconds": 120,
+    "maxExpectedTimeSeconds": 600,
+    "standardMinFilled": 38,
+    "standardMaxFilled": 44,
+    "colorKey": "DifficultyEasyColor"
+  },
+  {
+    "level": "medium",
+    "nameKey": "Difficulty_Medium",
+    "difficultyScore": 0.45,
+    "maxStrategyLevel": 2,
+    "minExpectedTimeSeconds": 300,
+    "maxExpectedTimeSeconds": 900,
+    "standardMinFilled": 30,
+    "standardMaxFilled": 37,
+    "colorKey": "DifficultyMediumColor"
+  },
+  {
+    "level": "hard",
+    "nameKey": "Difficulty_Hard",
+    "difficultyScore": 0.65,
+    "maxStrategyLevel": 3,
+    "minExpectedTimeSeconds": 600,
+    "maxExpectedTimeSeconds": 1800,
+    "standardMinFilled": 24,
+    "standardMaxFilled": 29,
+    "colorKey": "DifficultyHardColor"
+  },
+  {
+    "level": "expert",
+    "nameKey": "Difficulty_Expert",
+    "difficultyScore": 0.8,
+    "maxStrategyLevel": 4,
+    "minExpectedTimeSeconds": 900,
+    "maxExpectedTimeSeconds": 3600,
+    "standardMinFilled": 20,
+    "standardMaxFilled": 25,
+    "colorKey": "DifficultyExpertColor"
+  },
+  {
+    "level": "master",
+    "nameKey": "Difficulty_Master",
+    "difficultyScore": 0.95,
+    "maxStrategyLevel": 5,
+    "minExpectedTimeSeconds": 1800,
+    "maxExpectedTimeSeconds": 7200,
+    "standardMinFilled": 17,
+    "standardMaxFilled": 22,
+    "colorKey": "DifficultyMasterColor"
+  },
+  {
+    "level": "custom",
+    "nameKey": "Difficulty_Custom",
+    "difficultyScore": 0.5,
+    "maxStrategyLevel": 2,
+    "minExpectedTimeSeconds": 60,
+    "maxExpectedTimeSeconds": 3600,
+    "standardMinFilled": 25,
+    "standardMaxFilled": 45,
+    "colorKey": "DifficultyMediumColor"
+  }
+]

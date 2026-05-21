@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SudoKu.ViewModels"
+             xmlns:controls="clr-namespace:SudoKu.Controls"
+             x:Class="SudoKu.Views.CustomGamePage"
+             x:DataType="vm:CustomGameViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <!--
+        自定义游戏页面 - 参照Flutter CustomGameScreen实现
+        允许用户编辑棋盘并创建自定义谜题。
+        支持横屏和竖屏两种布局模式：
+        - 横屏：棋盘在左，键盘在右
+        - 竖屏：棋盘在上，键盘在下
+    -->
+
+    <Grid x:Name="MainLayout">
+
+        <!-- 背景渐变 -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{AppThemeBinding Light={StaticResource GradientStartLight}, Dark={StaticResource GradientStartDark}}"
+                              Offset="0.0" />
+                <GradientStop Color="{AppThemeBinding Light={StaticResource GradientEndLight}, Dark={StaticResource GradientEndDark}}"
+                              Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!-- 横屏布局 -->
+        <Grid x:Name="HorizontalLayout"
+              IsVisible="False"
+              RowDefinitions="Auto,*">
+
+            <!-- 顶部标题栏 -->
+            <Grid Grid.Row="0"
+                  HeightRequest="56"
+                  Padding="16,0"
+                  BackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}"
+                  Opacity="0.9">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 返回按钮 -->
+                <ImageButton Grid.Column="0"
+                             Source="arrow_back.png"
+                             Command="{Binding BackToMenuCommand}"
+                             BackgroundColor="Transparent"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             HorizontalOptions="Start"
+                             VerticalOptions="Center" />
+
+                <!-- 标题 -->
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+
+                <!-- 设置按钮 -->
+                <ImageButton Grid.Column="2"
+                             Source="settings.png"
+                             Command="{Binding SettingsCommand}"
+                             BackgroundColor="Transparent"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             HorizontalOptions="End"
+                             VerticalOptions="Center" />
+            </Grid>
+
+            <!-- 横屏游戏区域 -->
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto">
+
+                <!-- 棋盘区域 -->
+                <Grid Grid.Column="0"
+                      Padding="16">
+                    <controls:SudokuBoardView Board="{Binding Board}"
+                                              GameType="{Binding GameType}"
+                                              SelectedCellCommand="{Binding SelectCellCommand}"
+                                              HorizontalOptions="Center"
+                                              VerticalOptions="Center" />
+                </Grid>
+
+                <!-- 键盘区域 -->
+                <Grid Grid.Column="1"
+                      WidthRequest="200"
+                      Padding="0,16,16,16">
+                    <Grid RowDefinitions="*,*"
+                          RowSpacing="8">
+
+                        <!-- 功能键盘 -->
+                        <controls:FunctionPadView Grid.Row="0"
+                                                  UndoCommand="{Binding ClearBoardCommand}"
+                                                  RedoCommand="{Binding StartGameCommand}"
+                                                  CanUndo="True"
+                                                  CanRedo="{Binding CanStartGame}" />
+
+                        <!-- 数字键盘 -->
+                        <controls:NumberPadView Grid.Row="1"
+                                                InputNumberCommand="{Binding InputNumberCommand}"
+                                                NumberCounts="{Binding NumberCounts}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- 竖屏布局 -->
+        <Grid x:Name="VerticalLayout"
+              IsVisible="True"
+              RowDefinitions="Auto,*,Auto">
+
+            <!-- 顶部标题栏 -->
+            <Grid Grid.Row="0"
+                  HeightRequest="56"
+                  Padding="16,0"
+                  BackgroundColor="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 返回按钮 -->
+                <ImageButton Grid.Column="0"
+                             Source="arrow_back.png"
+                             Command="{Binding BackToMenuCommand}"
+                             BackgroundColor="Transparent"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             HorizontalOptions="Start"
+                             VerticalOptions="Center" />
+
+                <!-- 标题 -->
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+
+                <!-- 设置按钮 -->
+                <ImageButton Grid.Column="2"
+                             Source="settings.png"
+                             Command="{Binding SettingsCommand}"
+                             BackgroundColor="Transparent"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             HorizontalOptions="End"
+                             VerticalOptions="Center" />
+            </Grid>
+
+            <!-- 说明栏 -->
+            <Border Grid.Row="0"
+                    Margin="16,64,16,0"
+                    Padding="12,8"
+                    BackgroundColor="{AppThemeBinding Light=#26FFFFFF, Dark=#1AFFFFFF}"
+                    Stroke="{AppThemeBinding Light=#33FFFFFF, Dark=#1AFFFFFF}"
+                    StrokeThickness="1"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <HorizontalStackLayout Spacing="16">
+                    <!-- 说明1：点击选择单元格 -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#x2022;"
+                               FontSize="20"
+                               VerticalOptions="Center"
+                               TextColor="{StaticResource PrimaryColor}" />
+                        <Label Text="{Binding InstructionText1}"
+                               FontSize="12"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    </HorizontalStackLayout>
+                    <!-- 说明2：输入数字 -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#x2022;"
+                               FontSize="20"
+                               VerticalOptions="Center"
+                               TextColor="{StaticResource PrimaryColor}" />
+                        <Label Text="{Binding InstructionText2}"
+                               FontSize="12"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- 棋盘区域 -->
+            <Grid Grid.Row="1"
+                  Padding="16">
+                <controls:SudokuBoardView Board="{Binding Board}"
+                                          GameType="{Binding GameType}"
+                                          SelectedCellCommand="{Binding SelectCellCommand}"
+                                          HorizontalOptions="Center"
+                                          VerticalOptions="Center" />
+            </Grid>
+
+            <!-- 键盘区域 -->
+            <Grid Grid.Row="2"
+                  HeightRequest="200"
+                  Padding="16,0,16,16">
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="8">
+
+                    <!-- 功能键盘 -->
+                    <controls:FunctionPadView Grid.Column="0"
+                                              UndoCommand="{Binding ClearBoardCommand}"
+                                              RedoCommand="{Binding StartGameCommand}"
+                                              CanUndo="True"
+                                              CanRedo="{Binding CanStartGame}" />
+
+                    <!-- 数字键盘 -->
+                    <controls:NumberPadView Grid.Column="1"
+                                            InputNumberCommand="{Binding InputNumberCommand}"
+                                            NumberCounts="{Binding NumberCounts}" />
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- 验证中遮罩 -->
+        <Grid x:Name="ValidatingOverlay"
+              IsVisible="{Binding IsValidating}"
+              BackgroundColor="#80000000">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="16">
+                <ActivityIndicator IsRunning="True"
+                                   Color="{StaticResource PrimaryColor}"
+                                   WidthRequest="48"
+                                   HeightRequest="48" />
+                <Label Text="{Binding ValidatingText}"
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

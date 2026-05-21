@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SudoKu.ViewModels"
+             xmlns:resources="clr-namespace:SudoKu.Resources"
+             xmlns:converters="clr-namespace:SudoKu.Converters"
+             x:Class="SudoKu.Views.CompletionPage"
+             x:DataType="vm:CompletionViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <converters:GameTypeIconConverter x:Key="GameTypeIconTextConverter" />
+        <converters:GameTypeIconBackgroundConverter x:Key="GameTypeIconBackgroundConverter" />
+    </ContentPage.Resources>
+
+    <!-- 渐变背景 -->
+    <ContentPage.Background>
+        <LinearGradientBrush EndPoint="0,1">
+            <GradientStop Color="{AppThemeBinding Light=#E0E7FF, Dark=#0F172A}" Offset="0" />
+            <GradientStop Color="{AppThemeBinding Light=#C7D2FE, Dark=#1E1B4B}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24" VerticalOptions="Center">
+
+            <!-- 胜利图标 -->
+            <Border StrokeShape="RoundRectangle 80"
+                    BackgroundColor="{Binding GameType, Converter={StaticResource GameTypeIconBackgroundConverter}}"
+                    WidthRequest="120"
+                    HeightRequest="120"
+                    HorizontalOptions="Center">
+                <Border.Shadow>
+                    <Shadow Brush="#1A000000" Offset="0,4" Radius="20" Opacity="0.3" />
+                </Border.Shadow>
+                <Label Text="&#x1F3C6;"
+                       FontSize="56"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <!-- 标题 -->
+            <Label Text="{x:Static resources:AppResources.Congratulations}"
+                   Style="{StaticResource PageTitleStyle}"
+                   TextColor="#10B981"
+                   HorizontalOptions="Center" />
+
+            <!-- 游戏类型 -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                <Label Text="{Binding GameType, Converter={StaticResource GameTypeIconTextConverter}}"
+                       FontSize="24" />
+                <Label Text="{Binding GameTypeName}"
+                       FontSize="18"
+                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+            </HorizontalStackLayout>
+
+            <!-- 统计卡片 -->
+            <Border Style="{StaticResource GlassCardStyle}">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="24">
+                    <!-- 难度 -->
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" Spacing="4">
+                        <Label Text="{x:Static resources:AppResources.Difficulty}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                        <Label Text="{Binding DifficultyName}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#1E1B4B, Dark=White}" />
+                    </VerticalStackLayout>
+
+                    <!-- 用时 -->
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" Spacing="4">
+                        <Label Text="{x:Static resources:AppResources.Time}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                        <Label Text="{Binding CompletionTime}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#6366F1" />
+                    </VerticalStackLayout>
+
+                    <!-- 最佳时间 -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="Center" Spacing="4">
+                        <Label Text="{x:Static resources:AppResources.BestTime}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                        <Label Text="{Binding BestTime}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#10B981" />
+                    </VerticalStackLayout>
+
+                    <!-- 连胜 -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" Spacing="4">
+                        <Label Text="{x:Static resources:AppResources.Streak}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                        <Label Text="{Binding Streak}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#EC4899" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- 按钮组 - 使用Border替代SfButton -->
+            <VerticalStackLayout Spacing="12">
+                <!-- 再玩一次 -->
+                <Border StrokeShape="RoundRectangle 12"
+                        Padding="16,14"
+                        HorizontalOptions="Fill">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PlayAgainCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="1,0">
+                            <GradientStop Color="#10B981" Offset="0" />
+                            <GradientStop Color="#34D399" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Shadow>
+                        <Shadow Brush="#1A000000" Offset="0,4" Radius="12" Opacity="0.2" />
+                    </Border.Shadow>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                        <Label Text="&#x25B6;" FontSize="18" TextColor="White" />
+                        <Label Text="{x:Static resources:AppResources.PlayAgain}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="White" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- 返回首页 -->
+                <Border StrokeShape="RoundRectangle 12"
+                        Padding="16,14"
+                        HorizontalOptions="Fill">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackToHomeCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="1,0">
+                            <GradientStop Color="#6366F1" Offset="0" />
+                            <GradientStop Color="#818CF8" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Shadow>
+                        <Shadow Brush="#1A000000" Offset="0,4" Radius="12" Opacity="0.2" />
+                    </Border.Shadow>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                        <Label Text="&#x2302;" FontSize="18" TextColor="White" />
+                        <Label Text="{x:Static resources:AppResources.BackToHome}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="White" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- 查看统计 -->
+                <Border StrokeShape="RoundRectangle 12"
+                        Padding="16,14"
+                        HorizontalOptions="Fill">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ViewStatisticsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="1,0">
+                            <GradientStop Color="#3B82F6" Offset="0" />
+                            <GradientStop Color="#60A5FA" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Shadow>
+                        <Shadow Brush="#1A000000" Offset="0,4" Radius="12" Opacity="0.2" />
+                    </Border.Shadow>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                        <Label Text="&#x1F4CA;" FontSize="18" TextColor="White" />
+                        <Label Text="{x:Static resources:AppResources.ViewStatistics}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="White" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
