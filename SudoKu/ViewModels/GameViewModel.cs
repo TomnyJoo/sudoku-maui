@@ -554,11 +554,9 @@ public partial class GameViewModel : BaseViewModel
     /// <returns>初始化完成的任务。</returns>
     public override async Task InitializeAsync(object? parameter = null)
     {
-        // 如果参数是 Dictionary 且包含有效的游戏参数，才进行初始化
         if (parameter is not Dictionary<string, object> paramsDict)
             return;
 
-        // 检查是否有有效的游戏参数
         bool hasValidGameParams = paramsDict.TryGetValue("GameType", out var gt) && gt is GameType &&
                                   paramsDict.TryGetValue("Difficulty", out var diff) && diff is Difficulty;
 
@@ -569,13 +567,11 @@ public partial class GameViewModel : BaseViewModel
         var difficulty = (Difficulty)paramsDict["Difficulty"];
         var isNewGame = paramsDict.TryGetValue("IsNewGame", out var isNew) && (bool)isNew;
 
-        // 更新导航状态
         _isFirstNavigation = false;
         _hasActiveGame = true;
         _lastGameType = gameType;
         _lastDifficulty = difficulty;
 
-        // 支持自定义棋盘
         if (paramsDict.TryGetValue("CustomBoardJson", out var boardJsonObj) && boardJsonObj is string boardJsonStr)
         {
             var customBoard = DeserializeCustomBoard(boardJsonStr, gameType);
@@ -620,24 +616,22 @@ public partial class GameViewModel : BaseViewModel
     /// </summary>
     public async Task HandleNavigatedToAsync(IDictionary<string, object>? parameters)
     {
-        // 检查是否有有效的游戏参数（GameType 和 Difficulty）
+        if (CurrentState != null)
+        {
+            _hasActiveGame = true;
+            return;
+        }
+
         bool hasValidGameParams = parameters != null && 
                                   parameters.TryGetValue("GameType", out var gt) && gt is GameType &&
                                   parameters.TryGetValue("Difficulty", out var diff) && diff is Difficulty;
 
         if (hasValidGameParams)
         {
-            // InitializeAsync 已经包含了状态更新逻辑
             await InitializeAsync(parameters);
-        }
-        else if (CurrentState != null)
-        {
-            // 从设置/规则页面返回，保持现有游戏状态
-            _hasActiveGame = true;
         }
         else if (_lastGameType.HasValue && _lastDifficulty.HasValue)
         {
-            // 从其他页面返回但游戏状态丢失，尝试恢复
             await InitializeAsync(new Dictionary<string, object>
             {
                 { "GameType", _lastGameType.Value },
@@ -1318,10 +1312,25 @@ public partial class GameViewModel : BaseViewModel
     /// </summary>
     private void OnTimerTick(object? sender, EventArgs e)
     {
-        if (CurrentState is null) return;
-        var newTime = CurrentState.ElapsedTime + 1;
-        CurrentState = CurrentState.UpdateElapsedTime(newTime);
-        ElapsedTimeDisplay = FormatTime(newTime);
+        try
+        {
+            // 检查应用是否正在退出
+            if (Application.Current == null)
+            {
+                StopTimer();
+                return;
+            }
+
+            if (CurrentState is null) return;
+            var newTime = CurrentState.ElapsedTime + 1;
+            CurrentState = CurrentState.UpdateElapsedTime(newTime);
+            ElapsedTimeDisplay = FormatTime(newTime);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[GameViewModel] OnTimerTick error: {ex.Message}");
+            StopTimer();
+        }
     }
 
     #endregion
